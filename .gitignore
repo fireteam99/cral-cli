@@ -12,3 +12,7 @@ Thumbs.db
 ######################
 login.js
 register.js
+
+# Node Modules #
+######################
+node_modules
