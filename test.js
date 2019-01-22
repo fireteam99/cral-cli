@@ -6,7 +6,7 @@ try {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.goto('https://www.york.ac.uk/teaching/cws/wws/webpage1.html');
-      if ()
+      if ((await page.$('h1')))
 
     } catch (err) {
       console.log(err);
