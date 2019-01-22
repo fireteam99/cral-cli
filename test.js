@@ -6,8 +6,14 @@ try {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.goto('https://www.york.ac.uk/teaching/cws/wws/webpage1.html');
-      if ((await page.$('h1')))
-
+      const header = await page.$('h1');
+      if (header == null) {
+        console.log('failed');
+      } else {
+        console.log('passed');
+        console.log(await page.evaluate(header => header.textContent, header));
+      }
+      browser.close();
     } catch (err) {
       console.log(err);
     }

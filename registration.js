@@ -33,10 +33,26 @@ try {
         // click register button
         await webregPage.click('#submit');
         await webregPage.waitForNavigation();
-        // check to see whether the course was added
-        let wasAdded = (await webregPage.$('') !== null);
-        console.log('failed to register for class... trying again')
-        // waits for five seconds
+
+        // check to see if additional input box comes up
+        let additionalInputBox = await webregPage.$('.box');
+        if (additionalInputBox)
+          // grabs the error message
+          const error = await webregPage.$('.dt');
+          const errorMessage = await pave.evaluate(error => error.textContent, error);
+          // logs the failure
+          console.log(`Failed to register for course: ${course} with message: ${errorMessage}.\nTrying again...`);
+          // clicks the cancel button
+          await webregPage.click('[value=Cancel]');
+        } else {
+          // check to see if success message pops up
+
+          // checks to see if failure message pops up
+
+          // in all other cases try to continue
+
+          // waits for five seconds
+        }
         await page.waitFor(5000);
       }
 
