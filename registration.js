@@ -13,20 +13,38 @@ try {
       await loginPage.goto('https://cas.rutgers.edu/login');
       await loginPage.type('#username', username);
       await loginPage.type('#password', password);
-      await loginPage.click('.btn-submit');
-      await loginPage.waitForNavigation();
+      await Promse.all([
+        loginPage.click('.btn-submit'),
+        loginPage.waitForNavigation()
+      ])
       const cookies = await loginPage.cookies();
 
       const webregPage = await browser.newPage();
       await webregPage.setCookie(...cookies);
-      await webregPage.goto('https://sims.rutgers.edu/webreg/');
-      await webregPage.click('.ru-students');
+
+      // goes to webreg page
+      await Promise.all([
+         webregPage.goto('https://sims.rutgers.edu/webreg/'),
+         webregPage.waitForNavigation()
+      ]);
+
+
+      // clicks ru students button
+      await Promise.all([
+        webregPage.click('.ru-students'),
+        webregPage.waitForNavigation()
+      ]);
+
+      // selects spring semester and clicks submit
       await webregPage.click('#semesterSelection2');
       await Promise.all([
         webregPage.click('#submit'),
-        webregPage.waitForNavigation()
+        webregPage.waitForNavigation({ waitUntil: 'networkidle2' })
       ]);
-      await webregPage.screenshot({ path: 'screenshots/debug.png'});
+
+      // make sure that the registration page is actually loaded by checking for the box
+      await page.waitForSelector( '.box', { visible : true } );
+
       // adds class to first index box
       await webregPage.type('#i1', course);
       let wasAdded = false;
@@ -34,6 +52,9 @@ try {
       let attempts = 0;
 
       while (!wasAdded) {
+        // make sure that the registration page is actually loaded by checking for the box
+        await page.waitForSelector( '.box', { visible : true } );
+
         // click register button
         await Promise.all([
           webregPage.click('#submit'),
@@ -52,7 +73,7 @@ try {
           await webregPage.waitFor(timeout);
           await Promise.all([
             webregPage.click('[value=Cancel]'),
-            webregPage.waitForNavigation()
+            webregPage.waitForNavigation({ waitUntil: 'networkidle2' })
           ])
         } else {
           // check for a success
@@ -73,11 +94,12 @@ try {
               await webregPage.waitFor(timeout);
             } else {
               console.log(`Failed to register for course: ${course}, Due to unknown error.\nTrying again in ${timeout}...`);
+              await webregPage.waitFor(timeout);
             }
           }
         }
         attempts++;
-        wasAdded = true;
+        // wasAdded = true;
       }
 
       let hrend = process.hrtime(hrstart);
