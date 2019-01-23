@@ -91,10 +91,11 @@ try {
             } else {
               console.log(`Failed to register for course: ${course}, Due to unknown error.\nTrying again in ${timeout}...`);
               await webregPage.screenshot({ path: 'screenshots/error.png'});
-              await webregPage.waitFor(timeout);
+              await webregPage.waitFor(5000); // reduced time because we didn't ping the server
             }
           }
         }
+        console.log('-------------------------------------\n')
         attempts++;
         // wasAdded = true;
       } while (!wasAdded)
