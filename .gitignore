@@ -8,10 +8,9 @@
 ehthumbs.db
 Thumbs.db
 
-# Config files #
+# Config files and Screenshots #
 ######################
-login.js
-register.js
+/config
 /screenshots
 
 # Node Modules #
