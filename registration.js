@@ -7,7 +7,7 @@ try {
   (async () => {
     try {
       let hrstart = process.hrtime();
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
       const loginPage = await browser.newPage();
 
       await loginPage.goto('https://cas.rutgers.edu/login');
