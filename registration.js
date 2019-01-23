@@ -13,7 +13,7 @@ try {
       await loginPage.goto('https://cas.rutgers.edu/login');
       await loginPage.type('#username', username);
       await loginPage.type('#password', password);
-      await Promse.all([
+      await Promise.all([
         loginPage.click('.btn-submit'),
         loginPage.waitForNavigation()
       ])
@@ -42,18 +42,14 @@ try {
         webregPage.waitForNavigation({ waitUntil: 'networkidle2' })
       ]);
 
-      // make sure that the registration page is actually loaded by checking for the box
-      await page.waitForSelector( '.box', { visible : true } );
-
-      // adds class to first index box
-      await webregPage.type('#i1', course);
       let wasAdded = false;
-
       let attempts = 0;
 
-      while (!wasAdded) {
+      do {
         // make sure that the registration page is actually loaded by checking for the box
-        await page.waitForSelector( '.box', { visible : true } );
+        await webregPage.waitForSelector( '#i1', { visible : true } );
+        // adds class to first index box
+        await webregPage.type('#i1', course);
 
         // click register button
         await Promise.all([
@@ -94,13 +90,14 @@ try {
               await webregPage.waitFor(timeout);
             } else {
               console.log(`Failed to register for course: ${course}, Due to unknown error.\nTrying again in ${timeout}...`);
+              await webregPage.screenshot({ path: 'screenshots/error.png'});
               await webregPage.waitFor(timeout);
             }
           }
         }
         attempts++;
         // wasAdded = true;
-      }
+      } while (!wasAdded)
 
       let hrend = process.hrtime(hrstart);
       // exits program
