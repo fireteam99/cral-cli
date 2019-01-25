@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const { username, password } = require('./config/login.js');
-const { course1, course2, timeout, puppeteerOptions } = require('./config/options.js');
+const { course1, course2, baseTimeout, puppeteerOptions, randomization } = require('./config/options.js');
 
 const registerForCourses = async () => {
     try {
@@ -44,8 +44,10 @@ const registerForCourses = async () => {
       let attempts = 0;
 
       do {
+        // randomize the timeout
+        let timeout = baseTimeout + (Math.random() * randomization);
         // make sure that the registration page is actually loaded by checking for the box
-        await webregPage.waitForSelector( '#i1', { visible : true, timeout: 100000} );
+        await webregPage.waitForSelector( '#i1', { visible : true, timeout: 0} );
         // adds class to first index box
         await webregPage.type('#i1', course1);
         await webregPage.type('#i2', course2);
@@ -56,6 +58,9 @@ const registerForCourses = async () => {
           webregPage.waitForNavigation()
         ]);
 
+        // make sure that the actual page has loaded and not the waiting page
+        await webregPage.waitForSelector( '.box', { visible : true, timeout: 0} );
+
         // check to see if additional input box comes up
         let additionalInputBox = await webregPage.evaluate(`document.getElementById('operations0.specialPermissionNumber');`);
         if (additionalInputBox != null) {
@@ -63,20 +68,20 @@ const registerForCourses = async () => {
           const course1FullError = await webregPage.$('dt');
           const course1FullErrorMessage = await webregPage.evaluate(course1FullError => course1FullError.textContent, course1FullError);
           // logs the failure
-          console.log(`Failed to register for course1: ${course1}, with message: ${course1FullErrorMessage}.\nTrying again in ${timeout}...`);
-          // clicks the cancel button after timeout
-          await webregPage.waitFor(timeout);
+          console.log(`Failed to register for course1: ${course1} or course2: ${course2}, with message: ${course1FullErrorMessage}.\nTrying again in ${timeout}...`);
+          // clicks the cancel button
           await Promise.all([
             webregPage.click('[value=Cancel]'),
             webregPage.waitForNavigation({ waitUntil: 'networkidle2' })
-          ])
+          ]);
+          await webregPage.waitFor(timeout);
         } else {
           // check for a success
           const success = await webregPage.$('.info  .ok');
           if (success) {
             // log success
             const successMessage = await webregPage.evaluate(success => success.textContent, success);
-            console.log(`Successfully registered for course1: ${course1}, with message: ${successMessage}.`);
+            console.log(`Successfully registered for course1: ${course1} or course2: ${course2}, with message: ${successMessage}.`);
             // screenshots the success
             await webregPage.screenshot({ path: 'screenshots/webreg.png'});
             wasAdded = true;
@@ -85,10 +90,10 @@ const registerForCourses = async () => {
             const generalError = await webregPage.$('.info  .error');
             if (generalError) {
               const generalErrorMessage = await webregPage.evaluate(generalError => generalError.textContent, generalError);
-              console.log(`Failed to register for course1: ${course1}, with message: ${generalErrorMessage}.\nTrying again in ${timeout}...`);
+              console.log(`Failed to register for course1: ${course1} or course2: ${course2}, with message: ${generalErrorMessage}.\nTrying again in ${timeout}...`);
               await webregPage.waitFor(timeout);
             } else {
-              console.log(`Failed to register for course1: ${course1}, Due to unknown error.\nTrying again in ${timeout}...`);
+              console.log(`Failed to register for course1: ${course1} or course2: ${course2}, Due to unknown error.\nTrying again in ${timeout}...`);
               await webregPage.screenshot({ path: 'screenshots/error.png'});
               await webregPage.waitFor(5000); // reduced time because we didn't ping the server
             }
