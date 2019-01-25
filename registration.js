@@ -1,10 +1,8 @@
 const puppeteer = require('puppeteer');
 const { username, password } = require('./config/login.js');
-const { course, timeout } = require('./config/register.js');
+const { course1, course2, timeout } = require('./config/register.js');
 
-
-try {
-  (async () => {
+const registerForCourses = async () => {
     try {
       let hrstart = process.hrtime();
       const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
@@ -16,7 +14,7 @@ try {
       await Promise.all([
         loginPage.click('.btn-submit'),
         loginPage.waitForNavigation()
-      ])
+      ]);
       const cookies = await loginPage.cookies();
 
       const webregPage = await browser.newPage();
@@ -47,9 +45,10 @@ try {
 
       do {
         // make sure that the registration page is actually loaded by checking for the box
-        await webregPage.waitForSelector( '#i1', { visible : true } );
+        await webregPage.waitForSelector( '#i1', { visible : true, timeout: 100000} );
         // adds class to first index box
-        await webregPage.type('#i1', course);
+        await webregPage.type('#i1', course1);
+        await webregPage.type('#i2', course2);
 
         // click register button
         await Promise.all([
@@ -61,10 +60,10 @@ try {
         let additionalInputBox = await webregPage.evaluate(`document.getElementById('operations0.specialPermissionNumber');`);
         if (additionalInputBox != null) {
           // grabs the error message
-          const courseFullError = await webregPage.$('dt');
-          const courseFullErrorMessage = await webregPage.evaluate(courseFullError => courseFullError.textContent, courseFullError);
+          const course1FullError = await webregPage.$('dt');
+          const course1FullErrorMessage = await webregPage.evaluate(course1FullError => course1FullError.textContent, course1FullError);
           // logs the failure
-          console.log(`Failed to register for course: ${course}, with message: ${courseFullErrorMessage}.\nTrying again in ${timeout}...`);
+          console.log(`Failed to register for course1: ${course1}, with message: ${course1FullErrorMessage}.\nTrying again in ${timeout}...`);
           // clicks the cancel button after timeout
           await webregPage.waitFor(timeout);
           await Promise.all([
@@ -77,7 +76,7 @@ try {
           if (success) {
             // log success
             const successMessage = await webregPage.evaluate(success => success.textContent, success);
-            console.log(`Successfully registered for course: ${course}, with message: ${successMessage}.`);
+            console.log(`Successfully registered for course1: ${course1}, with message: ${successMessage}.`);
             // screenshots the success
             await webregPage.screenshot({ path: 'screenshots/webreg.png'});
             wasAdded = true;
@@ -86,10 +85,10 @@ try {
             const generalError = await webregPage.$('.info  .error');
             if (generalError) {
               const generalErrorMessage = await webregPage.evaluate(generalError => generalError.textContent, generalError);
-              console.log(`Failed to register for course: ${course}, with message: ${generalErrorMessage}.\nTrying again in ${timeout}...`);
+              console.log(`Failed to register for course1: ${course1}, with message: ${generalErrorMessage}.\nTrying again in ${timeout}...`);
               await webregPage.waitFor(timeout);
             } else {
-              console.log(`Failed to register for course: ${course}, Due to unknown error.\nTrying again in ${timeout}...`);
+              console.log(`Failed to register for course1: ${course1}, Due to unknown error.\nTrying again in ${timeout}...`);
               await webregPage.screenshot({ path: 'screenshots/error.png'});
               await webregPage.waitFor(5000); // reduced time because we didn't ping the server
             }
@@ -107,7 +106,11 @@ try {
     } catch (err) {
       console.log(err);
     }
-  }) ();
+};
+
+try {
+  registerForCourses();
 } catch (err) {
   console.log(err);
+  registerForCourses();
 }
