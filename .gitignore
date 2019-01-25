@@ -10,8 +10,10 @@ Thumbs.db
 
 # Config files and Screenshots #
 ######################
-/config
-/screenshots
+config
+screenshots
+log.txt
+error.txt
 
 # Node Modules #
 ######################
