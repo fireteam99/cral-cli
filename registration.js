@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer');
 const { username, password } = require('./config/login.js');
-const { course1, course2, timeout } = require('./config/register.js');
+const { course1, course2, timeout, puppeteerOptions } = require('./config/options.js');
 
 const registerForCourses = async () => {
     try {
       let hrstart = process.hrtime();
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch(puppeteerOptions);
       const loginPage = await browser.newPage();
 
       await loginPage.goto('https://cas.rutgers.edu/login');
