@@ -1,31 +1,9 @@
 const puppeteer = require('puppeteer');
+const { username, password } = require('./config/login.js');
+const { course1, course2, baseTimeout, puppeteerOptions, randomization } = require('./config/options.js');
 
-// returns true on successful add and false on failed add
-const registerForCourse = async ({ username, password, course, baseTimeout, puppeteerOptions, randomization, retryLimit }) => {
+const registerForCourses = async () => {
     try {
-      // make sure username, password, and course were passed
-      if (!username) {
-        throw 'Error, username is required.';
-      }
-      if (!password) {
-        throw 'Error, password is required.';
-      }
-      if (!course) {
-        throw 'Error, course is required.';
-      }
-      // set default values
-      if (!baseTimeout) {
-        baseTimeout = 5000; // 5 seconds
-      }
-      if (!puppeteerOptions) {
-        puppeteerOptions = {};
-      }
-      if (!randomization) {
-        randomization = 2000; // 2 seconds
-      }
-      if (!retryLimit) {
-        retryLimit = 10;
-      }
       let hrstart = process.hrtime();
       const browser = await puppeteer.launch(puppeteerOptions);
       const loginPage = await browser.newPage();
@@ -90,7 +68,7 @@ const registerForCourse = async ({ username, password, course, baseTimeout, pupp
           const course1FullError = await webregPage.$('dt');
           const course1FullErrorMessage = await webregPage.evaluate(course1FullError => course1FullError.textContent, course1FullError);
           // logs the failure
-          console.log(`Failed to register for course: ${course}, with message: ${course1FullErrorMessage}.\nTrying again in ${timeout}...`);
+          console.log(`Failed to register for course1: ${course1} or course2: ${course2}, with message: ${course1FullErrorMessage}.\nTrying again in ${timeout}...`);
           // clicks the cancel button
           await Promise.all([
             webregPage.click('[value=Cancel]'),
@@ -103,7 +81,7 @@ const registerForCourse = async ({ username, password, course, baseTimeout, pupp
           if (success) {
             // log success
             const successMessage = await webregPage.evaluate(success => success.textContent, success);
-            console.log(`Successfully registered for course: ${course}, with message: ${successMessage}.`);
+            console.log(`Successfully registered for course1: ${course1} or course2: ${course2}, with message: ${successMessage}.`);
             // screenshots the success
             await webregPage.screenshot({ path: 'screenshots/webreg.png'});
             wasAdded = true;
@@ -112,10 +90,10 @@ const registerForCourse = async ({ username, password, course, baseTimeout, pupp
             const generalError = await webregPage.$('.info  .error');
             if (generalError) {
               const generalErrorMessage = await webregPage.evaluate(generalError => generalError.textContent, generalError);
-              console.log(`Failed to register for course: ${course}, with message: ${generalErrorMessage}.\nTrying again in ${timeout}...`);
+              console.log(`Failed to register for course1: ${course1} or course2: ${course2}, with message: ${generalErrorMessage}.\nTrying again in ${timeout}...`);
               await webregPage.waitFor(timeout);
             } else {
-              console.log(`Failed to register for course: ${course}, Due to unknown error.\nTrying again in ${timeout}...`);
+              console.log(`Failed to register for course1: ${course1} or course2: ${course2}, Due to unknown error.\nTrying again in ${timeout}...`);
               await webregPage.screenshot({ path: 'screenshots/error.png'});
               await webregPage.waitFor(5000); // reduced time because we didn't ping the server
             }
@@ -124,20 +102,19 @@ const registerForCourse = async ({ username, password, course, baseTimeout, pupp
         console.log('-------------------------------------\n')
         attempts++;
         // wasAdded = true;
-      } while (!wasAdded && attempts <= retryLimit)
+      } while (!wasAdded)
 
       let hrend = process.hrtime(hrstart);
       // exits program
       console.log(`Made ${attempts} attempt(s) in ${hrend[0]} seconds.`);
       browser.close();
-      if (wasAdded) {
-        return true
-      } else {
-        return false
-      }
     } catch (err) {
-      throw "Fatal error:" + err;
+      console.log(err);
     }
 };
 
-module.exports = registerForCourse;
+try {
+  registerForCourses();
+} catch (err) {
+  console.log(err);
+}
