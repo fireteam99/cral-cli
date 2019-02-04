@@ -18,9 +18,13 @@ const runRegistration = async ({ indexes, bruteForce, runOptions }) => {
       let allRegistered = false;
       while (!allRegistered) {
         for (let index of indexes) {
-          runOptions.index = index;
-          const status = registerForCourse(runOptions);
-          statuses.push(status);
+          let i = 0;
+          if (!status[i]) {
+            runOptions.index = index;
+            const status = registerForCourse(runOptions);
+            statuses.push(status);
+          }
+          i++;
         }
         await Promise.all(statuses);
         allRegistered = statuses.every(status => status === true);
@@ -35,12 +39,14 @@ const runRegistration = async ({ indexes, bruteForce, runOptions }) => {
         const data = await fetch('https://sis.rutgers.edu/soc/openSections.gz?year=2019&term=1&campus=NB');
         const openSections = await data.json();
 
-        for (let index of indexs) {
-          if (openSections.includes(index)) {
+        for (let index of indexes) {
+          let i = 0;
+          if (!status[i]) {
             runOptions.index = index;
             const status = registerForCourse(runOptions);
             statuses.push(status);
           }
+          i++;
         }
         await Promise.all(statuses);
         allRegistered = statuses.every(status => status === true);
