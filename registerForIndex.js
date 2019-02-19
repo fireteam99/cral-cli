@@ -1,5 +1,9 @@
 const puppeteer = require('puppeteer');
 
+const createReturnStatus = (index, hasRegistered, error) => {
+  return { index: index, hasRegistered: hasRegistered, error: error };
+}
+
 // returns true on successful add and false on failed add
 const registerForIndex = async ({ username, password, index, baseTimeout, puppeteerOptions, randomization, retryLimit }) => {
     try {
@@ -30,6 +34,7 @@ const registerForIndex = async ({ username, password, index, baseTimeout, puppet
       const browser = await puppeteer.launch(puppeteerOptions);
       const loginPage = await browser.newPage();
 
+      // logs into rutgers CAS
       await loginPage.goto('https://cas.rutgers.edu/login');
       await loginPage.type('#username', username);
       await loginPage.type('#password', password);
@@ -39,6 +44,10 @@ const registerForIndex = async ({ username, password, index, baseTimeout, puppet
       ]);
       const cookies = await loginPage.cookies();
 
+      // check for login failure
+
+      // if fails then exit
+
       const webregPage = await browser.newPage();
       await webregPage.setCookie(...cookies);
 
@@ -47,7 +56,6 @@ const registerForIndex = async ({ username, password, index, baseTimeout, puppet
          webregPage.goto('https://sims.rutgers.edu/webreg/'),
          webregPage.waitForNavigation()
       ]);
-
 
       // clicks ru students button
       await Promise.all([
@@ -129,11 +137,9 @@ const registerForIndex = async ({ username, password, index, baseTimeout, puppet
       // exits program
       console.log(`Made ${attempts} attempt(s) in ${hrend[0]} seconds.`);
       browser.close();
-      if (wasAdded) {
-        return true
-      } else {
-        return false
-      }
+
+      return createReturnStatus(index, wasAdded, null);
+
     } catch (err) {
       throw "Fatal error:" + err;
     }
