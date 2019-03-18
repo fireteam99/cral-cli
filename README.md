@@ -1,2 +1,2 @@
-# RU-Reg-Helper
-Helps you register for those pesky classes that fill up too fast.
+# Project_CRAL
+Helps you register for those pesky classes that fill up too fast for Rutgers University.
