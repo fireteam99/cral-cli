@@ -1,0 +1,28 @@
+{
+  "name": "ru-reg-helper",
+  "version": "1.0.0",
+  "description": "Helps you register for rutgers courses.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "forever start --minUptime 60000 --spinSleepTime 60000  -o log.txt  -e log.txt  registration.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fireteam99/RU-Reg-Helper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fireteam99/RU-Reg-Helper/issues"
+  },
+  "homepage": "https://github.com/fireteam99/RU-Reg-Helper#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "chalk": "^2.4.2",
+    "commander": "^2.20.0",
+    "inquirer": "^6.5.0",
+    "nodemon": "^1.18.10",
+    "puppeteer": "^1.13.0"
+  }
+}
