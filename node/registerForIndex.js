@@ -146,10 +146,30 @@ const registerForIndexOnce = async ({ username, password, index, baseTimeout, pu
     }
 };
 
-const registerForIndex = () => {
-    // check the api to see if the class is open
+const registerForIndex = (options) => {
+    let registered = false;
 
+    // set a default time limit
 
+    while(!registered) {
+        // check the api to see if the class is open
+        const response = await rusocapi.get('/openSections.gz', {
+            params: {
+                year: '2019',
+                term: '9',
+                campus: 'NB',
+                level: 'U'
+            }
+        });
+        const openSections = (await response).data;
+        if (openSections.includes(options.index)) {
+            const status = await registerForIndexOnce(options);
+            if (status.hasRegistered) {
+                return status;
+            }
+        }
+    }
+    return status;
 }
 
 module.exports = registerForIndex;
