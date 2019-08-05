@@ -1,12 +1,12 @@
 const puppeteer = require('puppeteer');
-const rusocapi = require('./api');
+const rusocapi = require('../api/soc');
 
 const createReturnStatus = (index, hasRegistered, error) => {
   return { index: index, hasRegistered: hasRegistered, error: error };
 }
 
 // returns true on successful add and false on failed add
-const registerForIndexOnce = async ({ username, password, index, baseTimeout, puppeteerOptions, randomization, retryLimit }) => {
+const registerForIndex = async ({ username, password, index, baseTimeout, puppeteerOptions, randomization, retryLimit }) => {
     try {
       // make sure username, password, and index were passed
       if (!username) {
@@ -145,31 +145,5 @@ const registerForIndexOnce = async ({ username, password, index, baseTimeout, pu
       throw "Fatal error:" + err;
     }
 };
-
-const registerForIndex = (options) => {
-    let registered = false;
-
-    // set a default time limit
-
-    while(!registered) {
-        // check the api to see if the class is open
-        const response = await rusocapi.get('/openSections.gz', {
-            params: {
-                year: '2019',
-                term: '9',
-                campus: 'NB',
-                level: 'U'
-            }
-        });
-        const openSections = (await response).data;
-        if (openSections.includes(options.index)) {
-            const status = await registerForIndexOnce(options);
-            if (status.hasRegistered) {
-                return status;
-            }
-        }
-    }
-    return status;
-}
 
 module.exports = registerForIndex;
