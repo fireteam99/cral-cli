@@ -3,7 +3,7 @@ const { prompt } = require('inquirer');
 
 const registerForIndex = require('../util/registerForIndex');
 
-const registerForOne = async (options) => {
+const registerForOne = async options => {
     const { index } = options;
     try {
         // read in config from node persist
@@ -15,17 +15,20 @@ const registerForOne = async (options) => {
             logging: false,
             ttl: false,
             expiredInterval: 2 * 60 * 1000,
-            forgiveParseErrors: false
+            forgiveParseErrors: false,
         });
 
         const config = storage.getItem('config');
         if (config == null) {
             // prompt the user to set their configuration
-            const answer = await prompt([{
-                type: 'confirm',
-                name: 'continue',
-                message: 'You need to configure cral before registering. Would like to continue?'
-            }]);
+            const answer = await prompt([
+                {
+                    type: 'confirm',
+                    name: 'continue',
+                    message:
+                        'You need to configure cral before registering. Would like to continue?',
+                },
+            ]);
             if (answer.confirm) {
                 registerForOne(options);
                 return;
@@ -37,15 +40,15 @@ const registerForOne = async (options) => {
 
         let registered = false;
 
-        while(!registered) {
+        while (!registered) {
             // check the api to see if the class is open
             const response = await rusocapi.get('/openSections.gz', {
                 params: {
                     year: '2019',
                     term: '9',
                     campus: 'NB',
-                    level: 'U'
-                }
+                    level: 'U',
+                },
             });
             const openSections = (await response).data;
             if (openSections.includes(index)) {
@@ -58,6 +61,6 @@ const registerForOne = async (options) => {
     } catch (err) {
         console.log(err.message);
     }
-}
+};
 
 module.exports = registerForOne;
