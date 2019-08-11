@@ -1,7 +1,9 @@
 const storage = require('node-persist');
 const { prompt } = require('inquirer');
 
+const soc = require('../apis/soc');
 const registerForIndex = require('../util/registerForIndex');
+const registerQuestions = require('../questions/registerQuestions');
 
 const registerForOne = async options => {
     const { index } = options;
@@ -26,7 +28,7 @@ const registerForOne = async options => {
                     type: 'confirm',
                     name: 'continue',
                     message:
-                        'You need to configure cral before registering. Would like to continue?',
+                        'You need to configure cral first. Would like to continue?',
                 },
             ]);
             if (answer.confirm) {
@@ -38,19 +40,25 @@ const registerForOne = async options => {
             }
         }
 
+        // get run options from user
+        const options = await prompt(registerQuestions);
+
+        // destructure config
+        const { year, term, campus, level } = config;
+
         let registered = false;
 
         while (!registered) {
             // check the api to see if the class is open
-            const response = await rusocapi.get('/openSections.gz', {
+            const response = await soc.get('/openSections.gz', {
                 params: {
-                    year: '2019',
-                    term: '9',
-                    campus: 'NB',
-                    level: 'U',
+                    year,
+                    term,
+                    campus,
+                    level,
                 },
             });
-            const openSections = (await response).data;
+            const openSections = response.data;
             if (openSections.includes(index)) {
                 const status = await registerForIndex(options);
                 if (status.hasRegistered) {

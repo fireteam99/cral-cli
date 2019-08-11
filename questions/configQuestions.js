@@ -37,13 +37,13 @@ module.exports = [
         filter: v => {
             switch (v) {
                 case 'Winter':
-                    return 0;
+                    return '0';
                 case 'Spring':
-                    return 1;
+                    return '1';
                 case 'Summer':
-                    return 7;
+                    return '7';
                 case 'Fall':
-                    return 9;
+                    return '9';
                 default:
                     return -1;
             }
@@ -51,11 +51,10 @@ module.exports = [
     },
     {
         type: 'checkbox',
-        name: 'location',
+        name: 'campus',
         message: 'Choose university location(s) to register for...',
         choices: ['New Brunswick', 'Newark', 'Camden'],
         filter: v => {
-            console.log(v);
             return v.map(e => {
                 switch (e) {
                     case 'New Brunswick':
@@ -92,6 +91,12 @@ module.exports = [
         validate: v => (v.length ? true : 'Please choose atleast one level.'),
     },
     {
+        type: 'confirm',
+        name: 'notification',
+        message: 'Enable or disable notifications...',
+        default: true,
+    },
+    {
         type: 'number',
         name: 'timeout',
         message: `Enter a delay in seconds. Checking too often may be considered suspicious and could result in an account or IP ban from rutgers. Defaults to 180 seconds (2 minutes).`,
@@ -116,5 +121,12 @@ module.exports = [
                 return 'Please enter a non-negative number of seconds.';
             }
         },
+    },
+    {
+        type: 'confirm',
+        name: 'cloud',
+        message:
+            'Are you running this program on the cloud? Eg: Heroku or c9.io...',
+        default: false,
     },
 ];
