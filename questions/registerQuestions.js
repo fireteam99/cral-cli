@@ -1,3 +1,5 @@
+const validateIndex = require('../util/registerForIndex');
+
 module.exports = [
     {
         type: 'input',
@@ -5,7 +7,12 @@ module.exports = [
         message: 'Enter the index number of a course to register for...',
         validate: v => {
             // todo verify the index
-            return true;
+            try {
+                const info = validateIndex(index);
+            } catch (err) {
+                throw err;
+            } finally {
+            }
         },
     },
     {
