@@ -1,10 +1,8 @@
 const soc = require('../apis/soc');
-
+const ConfigError = require('../errors/ConfigError');
 // checks to see if an index is valid and returns some data about that index
-const validateIndex = async index => {
+const validateIndex = async ({ index, year, term, campus, level }) => {
     try {
-        // grab the year term and campus level from storage
-
         // get a list of all the availible courses
         const response = await soc.get('/courses.gz', {
             params: {
@@ -36,9 +34,13 @@ const validateIndex = async index => {
         return {
             course: selectedCourse,
             section: selectedSection,
+            year,
+            term,
+            campus,
+            level,
         };
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 

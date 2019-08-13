@@ -129,4 +129,11 @@ module.exports = [
             'Are you running this program on the cloud? Eg: Heroku or c9.io...',
         default: false,
     },
+    {
+        type: 'confirm',
+        name: 'validateIndex',
+        message:
+            'Choose if you would to validate indexes before registering...',
+        default: true,
+    },
 ];

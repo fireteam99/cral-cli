@@ -21,6 +21,7 @@ const registerForOne = async options => {
         });
 
         const config = storage.getItem('config');
+
         if (config == null) {
             // prompt the user to set their configuration
             const answer = await prompt([
@@ -40,11 +41,11 @@ const registerForOne = async options => {
             }
         }
 
-        // get run options from user
-        const options = await prompt(registerQuestions);
-
         // destructure config
         const { year, term, campus, level } = config;
+
+        // get run options from user
+        const options = await prompt(registerQuestions);
 
         let registered = false;
 

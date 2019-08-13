@@ -1,17 +1,76 @@
 const validateIndex = require('../util/registerForIndex');
+const { prompt } = require('inquirer');
+const Table = require('cli-table');
 
 module.exports = [
     {
         type: 'input',
         name: 'index',
         message: 'Enter the index number of a course to register for...',
-        validate: v => {
-            // todo verify the index
+        validate: async v => {
+            // intialize the node persist
+            await storage.init({
+                dir: '../storage/data',
+                stringify: JSON.stringify,
+                parse: JSON.parse,
+                encoding: 'utf8',
+                logging: false,
+                ttl: false,
+                expiredInterval: 2 * 60 * 1000,
+                forgiveParseErrors: false,
+            });
+            // grab the year, term, campus, and level from storage
+            const config = storage.getItem('config');
+
+            if (config == null) {
+                throw new ConfigError(
+                    'Error, cral configuration has not been set. Please run "cral config" before trying again.',
+                    0
+                );
+            }
+
+            const { year, term, campus, level } = config;
+
             try {
-                const info = validateIndex(index);
+                const info = validateIndex({
+                    index,
+                    year,
+                    term,
+                    campus,
+                    level,
+                });
+                const { section, course, year } = info;
+                let confirmQuestion = '';
+                if (section == null) {
+                    confirmQuestion = `It appears the section ${index} you are trying to register for is invalid. Would you like to continue anyways?
+                    Config Information: Year: ${year} \t Term: ${term} \t Campus: ${campus} \t Level: ${level}`;
+                } else {
+                    // course information
+                    const { title, subjectDecription } = course;
+                    let { credits } = course;
+                    if (credits == null) {
+                        credits = 'N/A';
+                    }
+
+                    // section information
+                    const { meetingTimes } = section;
+                    let { instructorsText } = section;
+                    if (instructorsText === '') {
+                        instructorsText = 'N/A';
+                    }
+
+                    const meetingTimesTable = new Table({
+                        head: ['Day', 'Time', 'Location', 'Type'],
+                        colWidths: [100, 200],
+                    });
+
+                    confirmQuestion = `You are attempting to register for section ${index}.
+                    Course Information: Title - ${title} \t Subject - ${subjectDecription} - ${course.credits}
+                    Section Information:
+                    Config Information: Year - ${year} \t Term - ${term} \t Campus - ${campus} \t Level - ${level}`;
+                }
             } catch (err) {
-                throw err;
-            } finally {
+                console.log(err.message);
             }
         },
     },
