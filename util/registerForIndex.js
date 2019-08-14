@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const rusocapi = require('../apis/soc');
 
 const createReturnStatus = (index, hasRegistered, error) => {
     return { index: index, hasRegistered: hasRegistered, error: error };

@@ -50,50 +50,43 @@ module.exports = [
         },
     },
     {
-        type: 'checkbox',
+        type: 'list',
         name: 'campus',
-        message: 'Choose university location(s) to register for...',
+        message: 'Choose a university location to register for...',
         choices: ['New Brunswick', 'Newark', 'Camden'],
         filter: v => {
-            return v.map(e => {
-                switch (e) {
-                    case 'New Brunswick':
-                        return 'NB';
-                    case 'Newark':
-                        return 'NK';
-                    case 'Camden':
-                        return 'CM';
-                    default:
-                        return 'ERR';
-                }
-            });
+            switch (v) {
+                case 'New Brunswick':
+                    return 'NB';
+                case 'Newark':
+                    return 'NK';
+                case 'Camden':
+                    return 'CM';
+                default:
+                    return 'ERR';
+            }
         },
-        validate: v =>
-            v.length ? true : 'Please choose atleast one location.',
     },
     {
-        type: 'checkbox',
+        type: 'list',
         name: 'level',
-        message: 'Choose your study level(s)...',
+        message: 'Choose your study level...',
         choices: ['Undergraduate', 'Graduate'],
         filter: v => {
-            return v.map(e => {
-                switch (e) {
-                    case 'Undergraduate':
-                        return 'U';
-                    case 'Graduate':
-                        return 'G';
-                    default:
-                        return 'ERR';
-                }
-            });
+            switch (v) {
+                case 'Undergraduate':
+                    return 'U';
+                case 'Graduate':
+                    return 'G';
+                default:
+                    return 'ERR';
+            }
         },
-        validate: v => (v.length ? true : 'Please choose atleast one level.'),
     },
     {
         type: 'confirm',
         name: 'notification',
-        message: 'Enable or disable notifications...',
+        message: 'Would you like notifications?',
         default: true,
     },
     {
@@ -131,9 +124,8 @@ module.exports = [
     },
     {
         type: 'confirm',
-        name: 'validateIndex',
-        message:
-            'Choose if you would to validate indexes before registering...',
+        name: 'verifyIndex',
+        message: 'Would like to validate your index before registering?',
         default: true,
     },
 ];

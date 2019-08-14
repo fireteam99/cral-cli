@@ -1,5 +1,4 @@
 const soc = require('../apis/soc');
-const ConfigError = require('../errors/ConfigError');
 // checks to see if an index is valid and returns some data about that index
 const validateIndex = async ({ index, year, term, campus, level }) => {
     try {
@@ -34,22 +33,20 @@ const validateIndex = async ({ index, year, term, campus, level }) => {
         return {
             course: selectedCourse,
             section: selectedSection,
-            year,
-            term,
-            campus,
-            level,
         };
     } catch (err) {
         throw err;
     }
 };
 
-(async () => {
-    await validateIndex({
-        index: '14502',
-        year: '2019',
-        term: '9',
-        campus: 'NB',
-        level: 'U',
-    });
-})();
+module.exports = validateIndex;
+
+// (async () => {
+//     await validateIndex({
+//         index: '14502',
+//         year: '2019',
+//         term: '9',
+//         campus: 'NB',
+//         level: 'U',
+//     });
+// })();
