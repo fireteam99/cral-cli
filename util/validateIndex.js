@@ -15,7 +15,6 @@ const validateIndex = async ({ index, year, term, campus, level }) => {
         let selectedCourse = null;
         let selectedSection = null;
         for (course of courses) {
-            console.log('test');
             for (section of course.sections) {
                 if (selectedCourse || selectedSection) {
                     break;

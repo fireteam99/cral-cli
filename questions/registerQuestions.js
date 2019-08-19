@@ -14,7 +14,8 @@ module.exports = [
     },
     {
         type: 'list',
-        name: 'Choose a time limit for your registration attempt... ',
+        name: 'duration',
+        message: 'Choose a time limit for your registration attempt... ',
         choices: [
             'None',
             '30 minutes',

@@ -1,6 +1,9 @@
 const storage = require('node-persist');
-const { prompt } = require('inquirer');
-const Table = require('cli-table');
+const inquirer = require('inquirer');
+const { prompt } = inquirer;
+const ui = new inquirer.ui.BottomBar();
+const Table = require('cli-table2');
+const ora = require('ora');
 
 const soc = require('../apis/soc');
 const registerForIndex = require('../util/registerForIndex');
@@ -9,8 +12,7 @@ const dayFromLetter = require('../util/dayFromLetter');
 const militaryToStandardTime = require('../util/militaryToStandardTime');
 const validateIndex = require('../util/validateIndex');
 
-const register = async options => {
-    const { index } = options;
+const register = async () => {
     try {
         // read in config from node persist
         await storage.init();
@@ -35,11 +37,13 @@ const register = async options => {
                 return;
             }
         }
-        // destructure config
-        const { year, term, campus, level, verifyIndex } = config;
 
         // get run options from user
         const options = await prompt(registerQuestions);
+        const { index, duration } = options;
+
+        // check if the user wants to verify an index before registering
+        const { verifyIndex } = config;
 
         // verify the index if configured
         if (verifyIndex) {
@@ -49,7 +53,17 @@ const register = async options => {
             //         0
             //     );
             // }
+            // destructure config
+            const { year, term, campus, level } = config;
 
+            // display a loading spinner
+            //ui.updateBottomBar('Verifying index... please wait...');
+            const spinner = ora({
+                text: 'Verifying index, this might take a moment...',
+                stream: process.stdout,
+            }).start();
+
+            // validate the index
             const info = await validateIndex({
                 index,
                 year,
@@ -58,28 +72,61 @@ const register = async options => {
                 level,
             });
             const { section, course } = info;
+
+            // create config information table
+            const configInfoTable = new Table({
+                head: ['Year', 'Term', 'Campus', 'Level'],
+                colWidths: [10, 10, 10, 10],
+            });
+            configInfoTable.push([year, term, campus, level]);
+
             let confirmQuestion = '';
             if (section == null) {
-                confirmQuestion = `It appears the index: ${index} you are trying to register for is invalid. Would you like to continue anyways?
-                    Config Information: Year: ${year} \t Term: ${term} \t Campus: ${campus} \t Level: ${level}`;
+                spinner.fail('Index verification failed.');
+                confirmQuestion =
+                    `It appears the index: ${index} you are trying to register for is invalid. Would you like to continue anyways?\n` +
+                    `Config Information:\n` +
+                    `${configInfoTable.toString()}\n`;
             } else {
+                spinner.succeed('Index verification succeeded.');
                 // course information
-                const { title, subjectDecription } = course;
+                const { title, courseString, subjectDescription } = course;
                 let { credits } = course;
                 if (credits == null) {
                     credits = 'N/A';
                 }
+                const courseInfoTable = new Table({
+                    head: ['Title', 'Code', 'Description', 'Credits'],
+                    colWidths: [25, 15, 25, 10],
+                    wordWrap: true,
+                });
+                courseInfoTable.push([
+                    title,
+                    courseString,
+                    subjectDescription,
+                    credits,
+                ]);
 
                 // section information
-                const { meetingTimes } = section;
-                let { instructorsText } = section;
+                let { instructorsText, openStatusText, examCode } = section;
                 if (instructorsText === '') {
                     instructorsText = 'N/A';
                 }
+                openStatus =
+                    openStatusText.charAt(0) +
+                    openStatusText.slice(1).toLowerCase();
+                const sectionInfoTable = new Table({
+                    head: ['Instructor(s)', 'Open Status', 'Exam Code'],
+                    colWidths: [25, 25, 15],
+                    wordWrap: true,
+                });
+                sectionInfoTable.push([instructorsText, openStatus, examCode]);
 
+                // create table of meeting times
+                const { meetingTimes } = section;
                 const meetingTimesTable = new Table({
                     head: ['Day', 'Time', 'Location', 'Type'],
-                    colWidths: [100, 200],
+                    colWidths: [10, 23, 20, 10],
                 });
 
                 for (meetingTime of meetingTimes) {
@@ -111,13 +158,16 @@ const register = async options => {
                     ]);
                 }
 
-                confirmQuestion = `You are attempting to register for section ${index}. Would you like to continue?
-                    Course Information: Title - ${title} \t Subject - ${subjectDecription} - ${
-                    course.credits
-                }
-                    Section Information: Instructors - ${instructorsText}
-                    Meeting Times: ${meetingTimesTable.toString()}
-                    Config Information: Year - ${year} \t Term - ${term} \t Campus - ${campus} \t Level - ${level}`;
+                confirmQuestion =
+                    `You are attempting to register for section ${index}. Would you like to continue?\n` +
+                    `Course Information:\n` +
+                    `${courseInfoTable.toString()}\n` +
+                    `Section Information:\n` +
+                    `${sectionInfoTable.toString()}\n` +
+                    `Meeting Times:\n` +
+                    `${meetingTimesTable.toString()}\n` +
+                    `Config Information:\n` +
+                    `${configInfoTable.toString()}\n`;
             }
             // ask the user if they want to continue
             const continueAnswer = await prompt([
