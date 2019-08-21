@@ -11,6 +11,7 @@ const registerQuestions = require('../questions/registerQuestions');
 const dayFromLetter = require('../util/dayFromLetter');
 const militaryToStandardTime = require('../util/militaryToStandardTime');
 const validateIndex = require('../util/validateIndex');
+const codeToTerm = require('../util/codeToTerm');
 
 const register = async () => {
     try {
@@ -76,15 +77,20 @@ const register = async () => {
             // create config information table
             const configInfoTable = new Table({
                 head: ['Year', 'Term', 'Campus', 'Level'],
-                colWidths: [10, 10, 10, 10],
+                colWidths: [7, 10, 7, 7],
             });
-            configInfoTable.push([year, term, campus, level]);
+            configInfoTable.push([
+                year,
+                `${term} - ${codeToTerm(term)}`,
+                campus,
+                level,
+            ]);
 
             let confirmQuestion = '';
             if (section == null) {
                 spinner.fail('Index verification failed.');
                 confirmQuestion =
-                    `It appears the index: ${index} you are trying to register for is invalid. Would you like to continue anyways?\n` +
+                    `It appears the section: ${index} you are trying to register for is invalid. Would you like to continue anyways?\n` +
                     `Config Information:\n` +
                     `${configInfoTable.toString()}\n`;
             } else {
@@ -97,7 +103,7 @@ const register = async () => {
                 }
                 const courseInfoTable = new Table({
                     head: ['Title', 'Code', 'Description', 'Credits'],
-                    colWidths: [25, 15, 25, 10],
+                    colWidths: [25, 12, 25, 9],
                     wordWrap: true,
                 });
                 courseInfoTable.push([
@@ -117,7 +123,7 @@ const register = async () => {
                     openStatusText.slice(1).toLowerCase();
                 const sectionInfoTable = new Table({
                     head: ['Instructor(s)', 'Open Status', 'Exam Code'],
-                    colWidths: [25, 25, 15],
+                    colWidths: [25, 17, 12],
                     wordWrap: true,
                 });
                 sectionInfoTable.push([instructorsText, openStatus, examCode]);
@@ -125,8 +131,8 @@ const register = async () => {
                 // create table of meeting times
                 const { meetingTimes } = section;
                 const meetingTimesTable = new Table({
-                    head: ['Day', 'Time', 'Location', 'Type'],
-                    colWidths: [10, 23, 20, 10],
+                    head: ['Day', 'Time', 'Campus', 'Building', 'Room', 'Type'],
+                    colWidths: [9, 22, 10, 11, 6, 6],
                 });
 
                 for (meetingTime of meetingTimes) {
@@ -139,21 +145,22 @@ const register = async () => {
                         roomNumber,
                         meetingModeDesc,
                     } = meetingTime;
+                    console.log(startTimeMilitary);
+                    console.log(endTimeMilitary);
                     const startTime = militaryToStandardTime(startTimeMilitary);
                     const endTime = militaryToStandardTime(endTimeMilitary);
                     const time = `${startTime} - ${endTime}`;
 
-                    const location =
-                        campusAbbrev == null ||
-                        buildingCode == null ||
-                        roomNumber == null
-                            ? 'N/A'
-                            : `${campusAbbrev} - ${buildingCode} - ${roomNumber}`;
+                    const campus = campusAbbrev ? campusAbbrev : 'N/A';
+                    const building = buildingCode ? buildingCode : 'N/A';
+                    const room = roomNumber ? roomNumber : 'N/A';
 
                     meetingTimesTable.push([
                         dayFromLetter(meetingDay),
                         time,
-                        location,
+                        campus,
+                        building,
+                        room,
                         meetingModeDesc,
                     ]);
                 }
