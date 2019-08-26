@@ -1,7 +1,6 @@
 const storage = require('node-persist');
 const inquirer = require('inquirer');
 const { prompt } = inquirer;
-const ui = new inquirer.ui.BottomBar();
 const Table = require('cli-table2');
 const ora = require('ora');
 
@@ -12,6 +11,7 @@ const dayFromLetter = require('../util/dayFromLetter');
 const militaryToStandardTime = require('../util/militaryToStandardTime');
 const validateIndex = require('../util/validateIndex');
 const codeToTerm = require('../util/codeToTerm');
+const configure = require('./configure');
 
 const register = async () => {
     try {
@@ -31,7 +31,7 @@ const register = async () => {
                 },
             ]);
             if (answer.confirm) {
-                registerForOne(options);
+                register();
                 return;
             } else {
                 console.log('Exiting... Cannot register until configured.');
@@ -186,32 +186,57 @@ const register = async () => {
             ]);
             // exit the command
             if (!continueAnswer.confirm) {
-                console.log('exiting registration');
+                console.log('Exting registration...');
                 return;
             }
         }
-        console.log('proceeding with registration');
+        console.log('Proceeding with registration...');
 
-        // let registered = false;
-        //
-        // while (!registered) {
-        //     // check the api to see if the class is open
-        //     const response = await soc.get('/openSections.gz', {
-        //         params: {
-        //             year,
-        //             term,
-        //             campus,
-        //             level,
-        //         },
-        //     });
-        //     const openSections = response.data;
-        //     if (openSections.includes(index)) {
-        //         const status = await registerForIndex(options);
-        //         if (status.hasRegistered) {
-        //             return status;
-        //         }
-        //     }
-        // }
+        let registered = false;
+
+        const maxDuration = duration * 60;
+        const startTime = process.hrtime()[0];
+        let currentDuration = -Infinity;
+
+        while (!registered && currentDuration < maxDuration) {
+            // check the api to see if the class is open
+            const response = await soc.get('/openSections.gz', {
+                params: {
+                    year,
+                    term,
+                    campus,
+                    level,
+                },
+            });
+            const { openSections } = response;
+            // attempt to register if the section is open
+            if (openSections.includes(index)) {
+                const { username, password, cloud } = config;
+                const puppeteerOptions = cloud
+                    ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+                    : {};
+                const status = await registerForIndex({
+                    username,
+                    password,
+                    index,
+                    puppeteerOptions,
+                });
+                if (status.hasRegistered) {
+                    registered = true;
+                }
+            }
+            currentDuration = process.hrtime(startTime)[0];
+        }
+        const finalDuration = process.hrtime(startTime)[0];
+        console.log(`Registration attempt finished for index ${index}.`);
+        const resultsTable = new Table({
+            head: ['Status', 'Duration'],
+            colWidths: [20, 20],
+            wordWrap: true,
+        });
+        const finalStatus = registered ? 'Suceeded' : 'Failed';
+        resultsTable.push([finalStatus, `${finalDuration} seconds`]);
+        console.log(resultsTable.toString);
     } catch (err) {
         console.log(err);
     }

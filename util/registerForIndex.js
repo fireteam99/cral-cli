@@ -17,13 +17,13 @@ const registerForIndex = async ({
     try {
         // make sure username, password, and index were passed
         if (!username) {
-            throw 'Error, username is required.';
+            throw new Error('Error, username is required.');
         }
         if (!password) {
-            throw 'Error, password is required.';
+            throw new Error('Error, password is required.');
         }
         if (!index) {
-            throw 'Error, course section index is required.';
+            throw new Error('Error, course section index is required.');
         }
         // set default values
         if (!baseTimeout) {
@@ -36,7 +36,7 @@ const registerForIndex = async ({
             randomization = 2000; // 2 seconds
         }
         if (!retryLimit) {
-            retryLimit = 10;
+            retryLimit = 0;
         }
         let hrstart = process.hrtime();
         const browser = await puppeteer.launch(puppeteerOptions);
@@ -50,11 +50,19 @@ const registerForIndex = async ({
             loginPage.click('.btn-submit'),
             loginPage.waitForNavigation(),
         ]);
-        const cookies = await loginPage.cookies();
-
         // check for login failure
-
-        // if fails then exit
+        const loginError = await loginPage.$('errors');
+        if (loginError) {
+            const loginErrorMessage = await (await loginError.getProperty(
+                'textContent'
+            )).jsonValue();
+            throw new Error(
+                'Error, login failed - please check your credentials in config. More info: ' +
+                    loginErrorMessage
+            );
+        }
+        // grab the cookies for webreg
+        const cookies = await loginPage.cookies();
 
         const webregPage = await browser.newPage();
         await webregPage.setCookie(...cookies);
@@ -177,7 +185,7 @@ const registerForIndex = async ({
 
         return createReturnStatus(index, wasAdded, null);
     } catch (err) {
-        throw 'Fatal error:' + err;
+        throw new Error('Unexpected error:' + err);
     }
 };
 

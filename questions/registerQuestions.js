@@ -1,6 +1,3 @@
-const validateIndex = require('../util/registerForIndex');
-const { prompt } = require('inquirer');
-
 module.exports = [
     {
         type: 'input',
