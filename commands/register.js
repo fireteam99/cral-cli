@@ -1,8 +1,10 @@
 const storage = require('node-persist');
 const inquirer = require('inquirer');
 const { prompt } = inquirer;
+// const ui = new inquirer.ui.BottomBar();
 const Table = require('cli-table2');
 const ora = require('ora');
+const cliProgress = require('cli-progress');
 
 const soc = require('../apis/soc');
 const registerForIndex = require('../util/registerForIndex');
@@ -11,7 +13,11 @@ const dayFromLetter = require('../util/dayFromLetter');
 const militaryToStandardTime = require('../util/militaryToStandardTime');
 const validateIndex = require('../util/validateIndex');
 const codeToTerm = require('../util/codeToTerm');
-const configure = require('./configure');
+
+// define a sleep function to use
+const sleep = ms => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
 
 const register = async () => {
     try {
@@ -41,19 +47,26 @@ const register = async () => {
 
         // get run options from user
         const options = await prompt(registerQuestions);
-        const { index, duration } = options;
+        const { index } = options;
+
+        // check to see if the index is in the proper format
+        if (!index.match(/^\d{5}$/)) {
+            throw new Error(
+                `Error, index: ${index} is not the correct format. It must be a 5 digit non-negative integer.`
+            );
+        }
 
         // check if the user wants to verify an index before registering
         const { verifyIndex } = config;
 
         // verify the index if configured
         if (verifyIndex) {
-            // if (config == null) {
-            //     throw new ConfigError(
-            //         'Error, cral configuration has not been set. Please run "cral config" before trying again.',
-            //         0
-            //     );
-            // }
+            if (config == null) {
+                throw new ConfigError(
+                    'Error, cral configuration has not been set. Please run "cral config" before trying again.',
+                    0
+                );
+            }
             // destructure config
             const { year, term, campus, level } = config;
 
@@ -192,13 +205,17 @@ const register = async () => {
         }
         console.log('Proceeding with registration...');
 
-        let registered = false;
-
+        const { duration } = options;
+        console.log(duration);
         const maxDuration = duration * 60;
-        const startTime = process.hrtime()[0];
-        let currentDuration = -Infinity;
+        const time = process.hrtime();
+        let currentDuration = -1;
 
-        while (!registered && currentDuration < maxDuration) {
+        const { timeout, randomization } = config;
+        console.log(`max duration: ${maxDuration}`);
+        const { year, term, campus, level } = config;
+        while (currentDuration < maxDuration) {
+            console.log('ran');
             // check the api to see if the class is open
             const response = await soc.get('/openSections.gz', {
                 params: {
@@ -208,7 +225,7 @@ const register = async () => {
                     level,
                 },
             });
-            const { openSections } = response;
+            const openSections = response.data;
             // attempt to register if the section is open
             if (openSections.includes(index)) {
                 const { username, password, cloud } = config;
@@ -219,15 +236,34 @@ const register = async () => {
                     username,
                     password,
                     index,
+                    term,
+                    year,
                     puppeteerOptions,
                 });
                 if (status.hasRegistered) {
-                    registered = true;
+                    break;
                 }
             }
-            currentDuration = process.hrtime(startTime)[0];
+            // calculate timeout
+            const adjustedTimeout =
+                timeout + Math.floor(Math.random() * randomization);
+            const bar = new cliProgress.SingleBar(
+                {},
+                cliProgress.Presets.shades_grey
+            );
+            bar.start(adjustedTimeout, 0, {
+                speed: 'N/A',
+            });
+            for (let i = 0; i < adjustedTimeout; i++) {
+                await sleep(1000);
+
+                bar.increment();
+            }
+            bar.stop();
+            currentDuration = process.hrtime(time)[0];
         }
-        const finalDuration = process.hrtime(startTime)[0];
+
+        const finalDuration = process.hrtime(time)[0];
         console.log(`Registration attempt finished for index ${index}.`);
         const resultsTable = new Table({
             head: ['Status', 'Duration'],
@@ -236,7 +272,7 @@ const register = async () => {
         });
         const finalStatus = registered ? 'Suceeded' : 'Failed';
         resultsTable.push([finalStatus, `${finalDuration} seconds`]);
-        console.log(resultsTable.toString);
+        console.log(resultsTable.toString());
     } catch (err) {
         console.log(err);
     }

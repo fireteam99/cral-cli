@@ -92,8 +92,8 @@ module.exports = [
     {
         type: 'number',
         name: 'timeout',
-        message: `Enter a delay in seconds. Checking too often may be considered suspicious and could result in an account or IP ban from rutgers. Defaults to 180 seconds (2 minutes).`,
-        default: 180,
+        message: `Enter a delay in seconds. Checking too often may be considered suspicious and could result in an account or IP ban from rutgers. Defaults to 30 seconds.`,
+        default: 30,
         validate: v => {
             if (v > 0) {
                 return true;
@@ -105,8 +105,8 @@ module.exports = [
     {
         type: 'number',
         name: 'randomization',
-        message: `Enter a maximum randomization amount in seconds for the timeout as a disguise. Defaults to 10 seconds.`,
-        default: 10,
+        message: `Enter a maximum randomization amount in seconds for the timeout as a disguise. Defaults to 5 seconds.`,
+        default: 5,
         validate: v => {
             if (v > 0) {
                 return true;

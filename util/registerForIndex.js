@@ -9,11 +9,14 @@ const registerForIndex = async ({
     username,
     password,
     index,
+    term,
+    year,
     baseTimeout,
     puppeteerOptions,
     randomization,
     retryLimit,
 }) => {
+    console.log(index);
     try {
         // make sure username, password, and index were passed
         if (!username) {
@@ -39,7 +42,10 @@ const registerForIndex = async ({
             retryLimit = 0;
         }
         let hrstart = process.hrtime();
-        const browser = await puppeteer.launch(puppeteerOptions);
+        // const browser = await puppeteer.launch(puppeteerOptions);
+        const browser = await puppeteer.launch({
+            headless: false,
+        });
         const loginPage = await browser.newPage();
 
         // logs into rutgers CAS
@@ -51,11 +57,12 @@ const registerForIndex = async ({
             loginPage.waitForNavigation(),
         ]);
         // check for login failure
-        const loginError = await loginPage.$('errors');
+        const loginError = await loginPage.$('.errors');
         if (loginError) {
-            const loginErrorMessage = await (await loginError.getProperty(
-                'textContent'
-            )).jsonValue();
+            const loginErrorMessage = await loginPage.evaluate(
+                loginError => loginError.textContent,
+                loginError
+            );
             throw new Error(
                 'Error, login failed - please check your credentials in config. More info: ' +
                     loginErrorMessage
@@ -79,12 +86,52 @@ const registerForIndex = async ({
             webregPage.waitForNavigation(),
         ]);
 
-        // selects spring semester and clicks submit
-        await webregPage.click('#semesterSelection2');
+        // check to see which semester to choose
+        const semesters = await webregPage.$$('.semesterInputClass');
+        const semesterValues = await Promise.all(
+            semesters.map(async semester => ({
+                value: await webregPage.evaluate(
+                    semester => semester.value,
+                    semester
+                ),
+                id: await webregPage.evaluate(
+                    semester => semester.id,
+                    semester
+                ),
+            }))
+        );
+        console.log(semesterValues);
+
+        // selects the choosen semester and clicks submit
+        const [chosenSemester] = semesterValues.filter(
+            sv => sv.value === `${term}${year}`
+        );
+        // checks if we were passed an invalid semester/year combination
+        if (chosenSemester == null) {
+            // if so return an error
+            throw new Error(
+                'Error, invalid term/year combination. Please run "cral c" to check your config settings...'
+            );
+        }
+        // click on the chosen semester
+        await webregPage.click(`#${chosenSemester.id}`);
         await Promise.all([
             webregPage.click('#submit'),
             webregPage.waitForNavigation({ waitUntil: 'networkidle2' }),
         ]);
+
+        // check to see if an error appeared
+        const semesterError = await webregPage.$('.errors > ul > h2 > span');
+        if (semesterError) {
+            const semesterErrorMessage = await webregPage.evaluate(
+                semesterError => semesterError.textContent,
+                semesterError
+            );
+            throw new Error(
+                'Error, the current term/year combination is not open for registration. Please run "cral c" to check your config settings... More info: ' +
+                    semesterErrorMessage
+            );
+        }
 
         let wasAdded = false;
         let attempts = 0;
@@ -98,7 +145,7 @@ const registerForIndex = async ({
                 timeout: 0,
             });
             // adds class to first index box
-            await webregPage.type('#i1', index1);
+            await webregPage.type('#i1', index);
 
             // click register button
             await Promise.all([
@@ -118,14 +165,14 @@ const registerForIndex = async ({
             );
             if (additionalInputBox != null) {
                 // grabs the error message
-                const index1FullError = await webregPage.$('dt');
-                const index1FullErrorMessage = await webregPage.evaluate(
-                    index1FullError => index1FullError.textContent,
-                    index1FullError
+                const indexFullError = await webregPage.$('dt');
+                const indexFullErrorMessage = await webregPage.evaluate(
+                    indexFullError => indexFullError.textContent,
+                    indexFullError
                 );
                 // logs the failure
                 console.log(
-                    `Failed to register for index: ${index}, with message: ${index1FullErrorMessage}.\nTrying again in ${timeout}...`
+                    `Failed to register for index: ${index}, with message: ${indexFullErrorMessage}.\nTrying again in ${timeout}...`
                 );
                 // clicks the cancel button
                 await Promise.all([
@@ -185,7 +232,7 @@ const registerForIndex = async ({
 
         return createReturnStatus(index, wasAdded, null);
     } catch (err) {
-        throw new Error('Unexpected error:' + err);
+        throw err;
     }
 };
 

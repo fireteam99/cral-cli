@@ -23,26 +23,24 @@ module.exports = [
             '24 hours',
         ],
         filter: v => {
-            return v.map(e => {
-                switch (e) {
-                    case 'None':
-                        return Infinity;
-                    case '30 minutes':
-                        return 30;
-                    case '1 hour':
-                        return 60;
-                    case '3 hours':
-                        return 60 * 3;
-                    case '5 hours':
-                        return 60 * 5;
-                    case '10 hours':
-                        return 60 * 10;
-                    case '24 hours':
-                        return 60 * 24;
-                    default:
-                        return -1;
-                }
-            });
+            switch (v) {
+                case 'None':
+                    return Infinity;
+                case '30 minutes':
+                    return 30;
+                case '1 hour':
+                    return 60;
+                case '3 hours':
+                    return 60 * 3;
+                case '5 hours':
+                    return 60 * 5;
+                case '10 hours':
+                    return 60 * 10;
+                case '24 hours':
+                    return 60 * 24;
+                default:
+                    return -1;
+            }
         },
     },
 ];
