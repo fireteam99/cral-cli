@@ -1,10 +1,9 @@
 const storage = require('node-persist');
 const inquirer = require('inquirer');
 const { prompt } = inquirer;
-// const ui = new inquirer.ui.BottomBar();
+const ui = new inquirer.ui.BottomBar();
 const Table = require('cli-table2');
 const ora = require('ora');
-const cliProgress = require('cli-progress');
 
 const soc = require('../apis/soc');
 const registerForIndex = require('../util/registerForIndex');
@@ -74,7 +73,6 @@ const register = async () => {
             //ui.updateBottomBar('Verifying index... please wait...');
             const spinner = ora({
                 text: 'Verifying index, this might take a moment...',
-                stream: process.stdout,
             }).start();
 
             // validate the index
@@ -206,16 +204,19 @@ const register = async () => {
         console.log('Proceeding with registration...');
 
         const { duration } = options;
-        console.log(duration);
+        // console.log(duration);
         const maxDuration = duration * 60;
         const time = process.hrtime();
         let currentDuration = -1;
 
         const { timeout, randomization } = config;
-        console.log(`max duration: ${maxDuration}`);
+        // console.log(`max duration: ${maxDuration}`);
         const { year, term, campus, level } = config;
+        let openingFound = false;
         while (currentDuration < maxDuration) {
-            console.log('ran');
+            const checkSpinner = new ora({
+                text: 'Checking for opening...',
+            }).start();
             // check the api to see if the class is open
             const response = await soc.get('/openSections.gz', {
                 params: {
@@ -226,8 +227,14 @@ const register = async () => {
                 },
             });
             const openSections = response.data;
+            checkSpinner.stop();
             // attempt to register if the section is open
             if (openSections.includes(index)) {
+                openingFound = true;
+                const regSpinner = ora({
+                    text: 'Opening found! Attempting to register...',
+                    color: 'green',
+                });
                 const { username, password, cloud } = config;
                 const puppeteerOptions = cloud
                     ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
@@ -240,6 +247,7 @@ const register = async () => {
                     year,
                     puppeteerOptions,
                 });
+                regSpinner.stop();
                 if (status.hasRegistered) {
                     break;
                 }
@@ -247,19 +255,22 @@ const register = async () => {
             // calculate timeout
             const adjustedTimeout =
                 timeout + Math.floor(Math.random() * randomization);
-            const bar = new cliProgress.SingleBar(
-                {},
-                cliProgress.Presets.shades_grey
-            );
-            bar.start(adjustedTimeout, 0, {
-                speed: 'N/A',
-            });
-            for (let i = 0; i < adjustedTimeout; i++) {
-                await sleep(1000);
 
-                bar.increment();
+            for (let i = 0; i < adjustedTimeout; i++) {
+                if (openingFound) {
+                    ui.updateBottomBar(
+                        `Failed to register. Waiting for: ${adjustedTimeout -
+                            i} seconds...`
+                    );
+                } else {
+                    ui.updateBottomBar(
+                        `No opening found. Waiting for: ${adjustedTimeout -
+                            i} seconds...`
+                    );
+                }
+                await sleep(1000);
             }
-            bar.stop();
+            ui.updateBottomBar('');
             currentDuration = process.hrtime(time)[0];
         }
 
