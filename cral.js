@@ -45,4 +45,13 @@ program
     )
     .action(register);
 
+// checks for invalid commands
+if (process.argv.length < 3) {
+    program.help();
+}
+
+program.on('*').action(function() {
+    program.help();
+});
+
 program.parse(process.argv);
