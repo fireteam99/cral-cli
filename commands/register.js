@@ -5,6 +5,7 @@ const ui = new inquirer.ui.BottomBar();
 const Table = require('cli-table2');
 const ora = require('ora');
 
+const configure = require('./configure');
 const soc = require('../apis/soc');
 const registerForIndex = require('../util/registerForIndex');
 const registerQuestions = require('../questions/registerQuestions');
@@ -12,13 +13,17 @@ const dayFromLetter = require('../util/dayFromLetter');
 const militaryToStandardTime = require('../util/militaryToStandardTime');
 const validateIndex = require('../util/validateIndex');
 const codeToTerm = require('../util/codeToTerm');
+const toHHMMSS = require('../util/toHHMMSS');
 
 // define a sleep function to use
 const sleep = ms => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-const register = async () => {
+const register = async cmdObj => {
+    // define spinners
+    let checkSpinner = null;
+    let regSpinner = null;
     try {
         // read in config from node persist
         await storage.init();
@@ -36,6 +41,7 @@ const register = async () => {
                 },
             ]);
             if (answer.confirm) {
+                await configure();
                 register();
                 return;
             } else {
@@ -43,10 +49,22 @@ const register = async () => {
                 return;
             }
         }
-
-        // get run options from user
-        const options = await prompt(registerQuestions);
-        const { index } = options;
+        let index = null;
+        let duration = null;
+        // check to see if index was manually passed in through flags
+        if (cmdObj.index != null) {
+            index = cmdObj.index;
+            if (cmdObj.T == null) {
+                duration = Infinity;
+            } else {
+                duration = cmdObj.T;
+            }
+        } else {
+            // get run options from user
+            const options = await prompt(registerQuestions);
+            index = options.index;
+            duration = options.duration;
+        }
 
         // check to see if the index is in the proper format
         if (!index.match(/^\d{5}$/)) {
@@ -156,8 +174,6 @@ const register = async () => {
                         roomNumber,
                         meetingModeDesc,
                     } = meetingTime;
-                    console.log(startTimeMilitary);
-                    console.log(endTimeMilitary);
                     const startTime = militaryToStandardTime(startTimeMilitary);
                     const endTime = militaryToStandardTime(endTimeMilitary);
                     const time = `${startTime} - ${endTime}`;
@@ -197,14 +213,16 @@ const register = async () => {
             ]);
             // exit the command
             if (!continueAnswer.confirm) {
-                console.log('Exting registration...');
+                console.log('Exiting registration...');
                 return;
             }
         }
-        console.log('Proceeding with registration...');
+        const durationText =
+            duration === Infinity ? '...' : ` for ${duration} minutes...`;
+        console.log(
+            `Proceeding with registration for index: ${index}${durationText}`
+        );
 
-        const { duration } = options;
-        // console.log(duration);
         const maxDuration = duration * 60;
         const time = process.hrtime();
         let currentDuration = -1;
@@ -213,8 +231,9 @@ const register = async () => {
         // console.log(`max duration: ${maxDuration}`);
         const { year, term, campus, level } = config;
         let openingFound = false;
+        let registered = false;
         while (currentDuration < maxDuration) {
-            const checkSpinner = new ora({
+            checkSpinner = ora({
                 text: 'Checking for opening...',
             }).start();
             // check the api to see if the class is open
@@ -231,14 +250,21 @@ const register = async () => {
             // attempt to register if the section is open
             if (openSections.includes(index)) {
                 openingFound = true;
-                const regSpinner = ora({
+                const { username, password, cloud } = config;
+                let puppeteerOptions = {};
+                if (cloud) {
+                    puppeteerOptions.args = [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                    ];
+                }
+                if (cmdObj.debug) {
+                    puppeteerOptions.headless = false;
+                }
+                regSpinner = ora({
                     text: 'Opening found! Attempting to register...',
                     color: 'green',
-                });
-                const { username, password, cloud } = config;
-                const puppeteerOptions = cloud
-                    ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
-                    : {};
+                }).start();
                 const status = await registerForIndex({
                     username,
                     password,
@@ -247,9 +273,21 @@ const register = async () => {
                     year,
                     puppeteerOptions,
                 });
-                regSpinner.stop();
                 if (status.hasRegistered) {
+                    regSpinner.succeed(
+                        `${status.message} ${status.screenshot}`
+                    );
+                    registered = true;
                     break;
+                } else {
+                    // log failure only if verbose or debug mode passed
+                    if (cmdObj.debug || cmdObj.verbose) {
+                        regSpinner.fail(
+                            `${status.message} ${status.screenshot}`
+                        );
+                    } else {
+                        regSpinner.stop();
+                    }
                 }
             }
             // calculate timeout
@@ -282,10 +320,21 @@ const register = async () => {
             wordWrap: true,
         });
         const finalStatus = registered ? 'Suceeded' : 'Failed';
-        resultsTable.push([finalStatus, `${finalDuration} seconds`]);
+        resultsTable.push([finalStatus, `${toHHMMSS(finalDuration)}`]);
         console.log(resultsTable.toString());
+        process.exit(0);
     } catch (err) {
-        console.log(err);
+        // stops any currently running spinners
+        if (checkSpinner) {
+            checkSpinner.stop();
+        }
+        if (regSpinner) {
+            regSpinner.fail(err.message);
+        }
+        if (cmdObj.debug != null) {
+            console.log(err);
+        }
+        process.exit(1);
     }
 };
 

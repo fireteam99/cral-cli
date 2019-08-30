@@ -9,6 +9,16 @@ const register = require('./commands/register');
 program.version('0.0.1')
     .description(`Command line tool for automated course registration for
         Rutgers University.`);
+
+// error on unknown commands
+program.on('command:*', function() {
+    console.error(
+        'Invalid command: %s\nSee --help for a list of available commands.',
+        program.args.join(' ')
+    );
+    process.exit(1);
+});
+
 // TODO: implement this
 program
     .command('sections')
@@ -36,22 +46,26 @@ program
     .description('Allows user to configure their registration options.')
     .action(configure);
 
-// TODO: implement this
 program
-    .command('register')
+    .command('register [index]')
     .alias('r')
-    .description(
-        'Allows user to register for a section of a course. If the section is closed, will monitor for an opening then attempt to register.'
+    .option('-v, --verbose', 'Log more information to console')
+    .option('-d, --debug', 'Runs puppeteer in non headless mode')
+    .option(
+        '-t <time>',
+        'Specify number of minutes to attempt registration',
+        parseInt
     )
-    .action(register);
+    .description('Allows user to register for a section of a course.')
+    .action(function(index, cmdObj) {
+        // console.log(index);
+        // console.log(cmdObj);
+        register({ index, ...cmdObj });
+    });
 
-// checks for invalid commands
+// checks for empy commands
 if (process.argv.length < 3) {
     program.help();
 }
-
-program.on('*').action(function() {
-    program.help();
-});
 
 program.parse(process.argv);
