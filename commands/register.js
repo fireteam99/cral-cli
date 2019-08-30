@@ -4,6 +4,7 @@ const { prompt } = inquirer;
 const ui = new inquirer.ui.BottomBar();
 const Table = require('cli-table2');
 const ora = require('ora');
+const notifier = require('node-notifier');
 
 const configure = require('./configure');
 const soc = require('../apis/soc');
@@ -24,6 +25,7 @@ const register = async cmdObj => {
     // define spinners
     let checkSpinner = null;
     let regSpinner = null;
+    let notification = false;
     try {
         // read in config from node persist
         await storage.init();
@@ -228,6 +230,7 @@ const register = async cmdObj => {
         let currentDuration = -1;
 
         const { timeout, randomization } = config;
+        notification = config.notification;
         // console.log(`max duration: ${maxDuration}`);
         const { year, term, campus, level } = config;
         let openingFound = false;
@@ -322,8 +325,27 @@ const register = async cmdObj => {
         const finalStatus = registered ? 'Suceeded' : 'Failed';
         resultsTable.push([finalStatus, `${toHHMMSS(finalDuration)}`]);
         console.log(resultsTable.toString());
+        if (notification) {
+            if (registered) {
+                notifier.notify({
+                    title: 'Succeeded',
+                    message: `Registration for ${index} succeeded...`,
+                });
+            } else {
+                notifier.notify({
+                    title: 'Failed',
+                    message: `Registration for ${index} failed...`,
+                });
+            }
+        }
         process.exit(0);
     } catch (err) {
+        if (notification) {
+            notifier.notify({
+                title: 'Error',
+                message: 'Registration failed due to an error...',
+            });
+        }
         // stops any currently running spinners
         if (checkSpinner) {
             checkSpinner.stop();
