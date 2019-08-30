@@ -322,10 +322,10 @@ const register = async cmdObj => {
             colWidths: [20, 20],
             wordWrap: true,
         });
-        const finalStatus = registered ? 'Suceeded' : 'Failed';
+        const finalStatus = registered ? 'Succeeded' : 'Failed';
         resultsTable.push([finalStatus, `${toHHMMSS(finalDuration)}`]);
         console.log(resultsTable.toString());
-        if (notification) {
+        if (!cloud && notification) {
             if (registered) {
                 notifier.notify({
                     title: 'Succeeded',
@@ -340,7 +340,7 @@ const register = async cmdObj => {
         }
         process.exit(0);
     } catch (err) {
-        if (notification) {
+        if (!cloud && notification) {
             notifier.notify({
                 title: 'Error',
                 message: 'Registration failed due to an error...',
