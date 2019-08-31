@@ -5,6 +5,8 @@ const ui = new inquirer.ui.BottomBar();
 const Table = require('cli-table2');
 const ora = require('ora');
 const notifier = require('node-notifier');
+const path = require('path');
+const chalk = require('chalk');
 
 const configure = require('./configure');
 const soc = require('../apis/soc');
@@ -26,9 +28,10 @@ const register = async cmdObj => {
     let checkSpinner = null;
     let regSpinner = null;
     let notification = false;
+    let cloud = 'true';
     try {
         // read in config from node persist
-        await storage.init();
+        await storage.init({ dir: path.join(__dirname, '..', 'storage') });
 
         const config = await storage.getItem('config');
 
@@ -44,13 +47,14 @@ const register = async cmdObj => {
             ]);
             if (answer.confirm) {
                 await configure();
-                register();
+                await register();
                 return;
             } else {
                 console.log('Exiting... Cannot register until configured.');
                 return;
             }
         }
+        const { cloud } = config;
         let index = null;
         let duration = null;
         // check to see if index was manually passed in through flags
@@ -215,21 +219,23 @@ const register = async cmdObj => {
             ]);
             // exit the command
             if (!continueAnswer.confirm) {
-                console.log('Exiting registration...');
+                console.log(chalk.red('Exiting registration...'));
                 return;
             }
         }
         const durationText =
             duration === Infinity ? '...' : ` for ${duration} minutes...`;
         console.log(
-            `Proceeding with registration for index: ${index}${durationText}`
+            chalk.green(
+                `Proceeding with registration for index: ${index}${durationText}`
+            )
         );
 
         const maxDuration = duration * 60;
         const time = process.hrtime();
         let currentDuration = -1;
 
-        const { timeout, randomization } = config;
+        const { timeout, randomization, username, password } = config;
         notification = config.notification;
         // console.log(`max duration: ${maxDuration}`);
         const { year, term, campus, level } = config;
@@ -253,7 +259,6 @@ const register = async cmdObj => {
             // attempt to register if the section is open
             if (openSections.includes(index)) {
                 openingFound = true;
-                const { username, password, cloud } = config;
                 let puppeteerOptions = {};
                 if (cloud) {
                     puppeteerOptions.args = [
@@ -265,7 +270,9 @@ const register = async cmdObj => {
                     puppeteerOptions.headless = false;
                 }
                 regSpinner = ora({
-                    text: 'Opening found! Attempting to register...',
+                    text: `${chalk.green(
+                        'Opening found!'
+                    )} Attempting to register...`,
                     color: 'green',
                 }).start();
                 const status = await registerForIndex({
@@ -300,13 +307,19 @@ const register = async cmdObj => {
             for (let i = 0; i < adjustedTimeout; i++) {
                 if (openingFound) {
                     ui.updateBottomBar(
-                        `Failed to register. Waiting for: ${adjustedTimeout -
-                            i} seconds...`
+                        `${chalk.red(
+                            'Failed to register'
+                        )}. Waiting for: ${chalk.yellow(
+                            adjustedTimeout - i
+                        )} seconds...`
                     );
                 } else {
                     ui.updateBottomBar(
-                        `No opening found. Waiting for: ${adjustedTimeout -
-                            i} seconds...`
+                        `${chalk.yellow(
+                            'No opening found.'
+                        )} Waiting for: ${chalk.yellow(
+                            adjustedTimeout - i
+                        )} seconds...`
                     );
                 }
                 await sleep(1000);
@@ -316,34 +329,39 @@ const register = async cmdObj => {
         }
 
         const finalDuration = process.hrtime(time)[0];
-        console.log(`Registration attempt finished for index ${index}.`);
+        console.log(
+            chalk.yellow(`Registration attempt finished for index ${index}.`)
+        );
         const resultsTable = new Table({
             head: ['Status', 'Duration'],
             colWidths: [20, 20],
             wordWrap: true,
         });
-        const finalStatus = registered ? 'Succeeded' : 'Failed';
+        const finalStatus = registered
+            ? chalk.green('Succeeded')
+            : chalk.red('Failed');
         resultsTable.push([finalStatus, `${toHHMMSS(finalDuration)}`]);
         console.log(resultsTable.toString());
         if (!cloud && notification) {
             if (registered) {
                 notifier.notify({
                     title: 'Succeeded',
-                    message: `Registration for ${index} succeeded...`,
+                    message: chalk.green(
+                        `Registration for ${index} succeeded...`
+                    ),
                 });
             } else {
                 notifier.notify({
                     title: 'Failed',
-                    message: `Registration for ${index} failed...`,
+                    message: chalk.red(`Registration for ${index} failed...`),
                 });
             }
         }
-        process.exit(0);
     } catch (err) {
         if (!cloud && notification) {
             notifier.notify({
                 title: 'Error',
-                message: 'Registration failed due to an error...',
+                message: chalk.red('Registration failed due to an error...'),
             });
         }
         // stops any currently running spinners
@@ -354,9 +372,8 @@ const register = async cmdObj => {
             regSpinner.fail(err.message);
         }
         if (cmdObj.debug != null) {
-            console.log(err);
+            console.log(chalk.red(err));
         }
-        process.exit(1);
     }
 };
 

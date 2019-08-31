@@ -27,7 +27,7 @@ module.exports = [
         type: 'list',
         name: 'year',
         message: 'Enter the year you would liked to register for...',
-        choices: ['2019'],
+        choices: ['2019', '2020'],
     },
     {
         type: 'list',

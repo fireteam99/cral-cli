@@ -5,9 +5,10 @@ const { prompt } = require('inquirer');
 
 const configure = require('./commands/configure');
 const register = require('./commands/register');
+const display = require('./commands/display');
 
 program.version('0.0.1')
-    .description(`Command line tool for automated course registration for
+    .description(`Command line interface to automated course registration for
         Rutgers University.`);
 
 // error on unknown commands
@@ -21,30 +22,34 @@ program.on('command:*', function() {
 
 // TODO: implement this
 program
-    .command('sections')
-    .alias('s')
-    .description(`Displays a list of sections to watch for.`);
+    .command('display')
+    .alias('d')
+    .description(`Displays user configuration options.`)
+    .option('-p, --password', 'Display password')
+    .action(async function(cmdObj) {
+        await display(cmdObj);
+        process.exit(0);
+    });
 
-// TODO: implement this
-program
-    .command('watch')
-    .alias('w')
-    .description(
-        'Notifies user when a section opens up and gives them an option to register.'
-    );
-
-// TODO: implement this
-program
-    .command('options')
-    .alias('o')
-    .description(`Displays user configuration options.`);
-
-// TODO: implement this
 program
     .command('configure')
     .alias('c')
+    .option('-u, --username', 'Configure username')
+    .option('-p, --password', 'Configure password')
+    .option('-y, --year', 'Configure year')
+    .option('-t, --term', 'Configure term')
+    .option('-c, --campus', 'Configure campus')
+    .option('-l, --level', 'Configure level')
+    .option('-n, --notification', 'Configure notification')
+    .option('-t, --timeout', 'Configure timeout')
+    .option('-r, --randomization', 'Configure randomization')
+    .option('-c, --cloud', 'Configure cloud')
+    .option('-v, --verify', 'Configure index verification')
     .description('Allows user to configure their registration options.')
-    .action(configure);
+    .action(async function(cmdObj) {
+        await configure(cmdObj);
+        process.exit(0);
+    });
 
 program
     .command('register [index]')
@@ -57,10 +62,11 @@ program
         parseInt
     )
     .description('Allows user to register for a section of a course.')
-    .action(function(index, cmdObj) {
+    .action(async function(index, cmdObj) {
         // console.log(index);
         // console.log(cmdObj);
-        register({ index, ...cmdObj });
+        await register({ index, ...cmdObj });
+        process.exit(0);
     });
 
 // checks for empy commands
