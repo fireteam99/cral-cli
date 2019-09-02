@@ -8,5 +8,7 @@ module.exports = code => {
             return 'Summer';
         case '9':
             return 'Fall';
+        default:
+            return 'Error';
     }
 };

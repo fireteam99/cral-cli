@@ -90,6 +90,10 @@ cral c
 ### Help
 Run `cral -h` or `cral --help` for instructions on how to use the cli.
 
+## What's Next
+ - Registration for multiple indexes
+ - More comprehensive tests
+
 ## Deployment
 
 If you're running this on a cloud environment such as Heroku, CodeAnywhere, or Cloud9, make sure to set the configuration setting `cloud` to true.
