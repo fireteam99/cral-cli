@@ -2,11 +2,11 @@
 
 A command line interface that makes registering for courses at Rutgers University easier. Makes use of [Rutgers API](http://api.rutgers.edu/) and [Puppeteer](https://github.com/GoogleChrome/puppeteer) to poll for openings and register for classes respectively.
 
+![demo-r1.gif](docs/gifs/demo-r1.gif)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system. 
-
-
 
 ### Prerequisites
 
@@ -28,13 +28,62 @@ cd cral-cli
 npm link
 ```
 
-Set your configurations to begin using cral
+Set up your configuration to begin using cral
 
 ```
 cral c
 ```
 
 ## Usage
+### Set Configuration
+**Description:** Set your configuration options. Running the command without any flags to set all settings. Alternatively, you can pass any number of optional flags to only configure specific settings.
+
+**Command:** `cral c` or `cral configure`
+ 
+**Flags:**
+
+- `-u` or `--username` Configure username
+- `-p` or `--password` Configure username
+- `-y` or `--year` Configure username
+- `-t` or `--term` Configure username
+- `-c` or `--campus` Configure username
+- `-l` or `--level` Configure username
+- `-n` or `--notification` Configure username
+- `-t` or `--timeout` Configure username
+- `-r` or `--randomization` Configure username
+- `-c` or `--cloud` Configure cloud
+- `-v` or `--verify` Configure index verification
+
+![demo-c.gif](docs/gifs/demo-c.gif)
+
+ 
+### View Configuration
+**Description:** View your configuration settings using `cral d` or `cral display`. By default your password is is hidden - to view it pass in `-p` as a flag.
+
+**Command:** `cral d` or `cral configure`
+
+**Flags:**
+
+- `-p` or `--password` Display password
+
+![demo-d.gif](docs/gifs/demo-d.gif)
+
+### Register for Course
+**Description:** Register for a course by using `cral r` and following the prompts or directly passing in the index and time - `cral r <index #> -t <time to run in minutes>`. Note: not passing a time to run when passing in the index directly results in no time limit.
+
+**Command:** `cral register [index]` or `cral r [index]`
+
+**Flags:**
+
+- `-t <time>` Sets the amount of time you want the program to run. Note: this flag is ignored if you do not directly pass the index.
+- `-v` or `--verbose` Log more information to console.
+-  `-d` or `--debug` Runs puppeteer in non-headless mode.
+
+![demo-r2.gif](docs/gifs/demo-r2.gif)
+
+
+### Help
+Run `cral -h` or `cral --help` for instructions on how to use the cli.
 
 ## Deployment
 
@@ -48,11 +97,12 @@ If you're running this on a cloud environment such as Heroku, CodeAnywhere, or C
 
 ## Contributing
 
-This is an open source project so feel free to fork and/or contribute at anytime. We use the fork and pull request workflow. 
+This is an open source project so feel free to fork and/or contribute at anytime. This project users the fork and pull request workflow. 
 
 ## Versioning
 
-The current version is 1.0.0
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/fireteam99/cral-cli/tags). 
+
 
 ## Authors
 

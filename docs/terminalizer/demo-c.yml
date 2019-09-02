@@ -1,0 +1,192 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+    # Specify a command to be executed
+    # like `/bin/bash -l`, `ls`, or any other commands
+    # the default is bash for Linux
+    # or powershell.exe for Windows
+    command: bash -l
+
+    # Specify the current working directory path
+    # the default is the current working directory path
+    cwd: /Users/Ray
+
+    # Export additional ENV variables
+    env:
+        recording: true
+
+    # Explicitly set the number of columns
+    # or use `auto` to take the current
+    # number of columns of your shell
+    cols: 90
+
+    # Explicitly set the number of rows
+    # or use `auto` to take the current
+    # number of rows of your shell
+    rows: 30
+
+    # Amount of times to repeat GIF
+    # If value is -1, play once
+    # If value is 0, loop indefinitely
+    # If value is a positive number, loop n times
+    repeat: 0
+
+    # Quality
+    # 1 - 100
+    quality: 100
+
+    # Delay between frames in ms
+    # If the value is `auto` use the actual recording delays
+    frameDelay: auto
+
+    # Maximum delay between frames in ms
+    # Ignored if the `frameDelay` isn't set to `auto`
+    # Set to `auto` to prevent limiting the max idle time
+    maxIdleTime: 2000
+
+    # The surrounding frame box
+    # The `type` can be null, window, floating, or solid`
+    # To hide the title use the value null
+    # Don't forget to add a backgroundColor style with a null as type
+    frameBox:
+        type: floating
+        title: cral
+        style:
+            border: 0px black solid
+            # boxShadow: none
+            # margin: 0px
+
+    # Add a watermark image to the rendered gif
+    # You need to specify an absolute path for
+    # the image on your machine or a URL, and you can also
+    # add your own CSS styles
+    watermark:
+        imagePath: null
+        style:
+            position: absolute
+            right: 15px
+            bottom: 15px
+            width: 100px
+            opacity: 0.9
+
+    # Cursor style can be one of
+    # `block`, `underline`, or `bar`
+    cursorStyle: block
+
+    # Font family
+    # You can use any font that is installed on your machine
+    # in CSS-like syntax
+    fontFamily: 'Monaco, Lucida Console, Ubuntu Mono, Monospace'
+
+    # The size of the font
+    fontSize: 12
+
+    # The height of lines
+    lineHeight: 1
+
+    # The spacing between letters
+    letterSpacing: 0
+
+    # Theme
+    theme:
+        background: 'transparent'
+        foreground: '#afafaf'
+        cursor: '#c7c7c7'
+        black: '#232628'
+        red: '#fc4384'
+        green: '#b3e33b'
+        yellow: '#ffa727'
+        blue: '#75dff2'
+        magenta: '#ae89fe'
+        cyan: '#708387'
+        white: '#d5d5d0'
+        brightBlack: '#626566'
+        brightRed: '#ff7fac'
+        brightGreen: '#c8ed71'
+        brightYellow: '#ebdf86'
+        brightBlue: '#75dff2'
+        brightMagenta: '#ae89fe'
+        brightCyan: '#b1c6ca'
+        brightWhite: '#f9f9f4'
+
+# Records, feel free to edit them
+records:
+    - delay: 470
+      content: "\e]7;file://Rays-MacBook-Pro-6.local/Users/Ray\a\e[?1034hRays-MacBook-Pro-6:~ Ray$ "
+    - delay: 464
+      content: c
+    - delay: 296
+      content: r
+    - delay: 103
+      content: a
+    - delay: 111
+      content: l
+    - delay: 113
+      content: ' '
+    - delay: 174
+      content: c
+    - delay: 96
+      content: "\r\n"
+    - delay: 349
+      content: "\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0m\e[31D\e[31C"
+    - delay: 1192
+      content: "u\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0mu\e[32D\e[32C"
+    - delay: 147
+      content: "s\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0mus\e[33D\e[33C"
+    - delay: 78
+      content: "e\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0muse\e[34D\e[34C"
+    - delay: 57
+      content: "r\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0muser\e[35D\e[35C"
+    - delay: 87
+      content: "n\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0musern\e[36D\e[36C"
+    - delay: 127
+      content: "a\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0muserna\e[37D\e[37C"
+    - delay: 79
+      content: "m\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0musernam\e[38D\e[38C"
+    - delay: 136
+      content: "e\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0musername\e[39D\e[39C"
+    - delay: 111
+      content: "\r\r\n\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID username...\e[22m\e[0m \e[0m\e[36musername\e[39m\e[39D\e[39C\r\n\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 669
+      content: "p\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 105
+      content: "a\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 103
+      content: "s\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 207
+      content: "s\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 128
+      content: "w\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 336
+      content: "o\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 160
+      content: "r\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 168
+      content: "d\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[input is hidden] \e[22m\e[23m\e[49D\e[49C"
+    - delay: 87
+      content: "\r\r\n\e[2K\e[G\e[32m?\e[39m \e[1mEnter your netID password...\e[22m\e[0m \e[0m\e[3m\e[2m[hidden]\e[22m\e[23m\e[39D\e[39C\r\n\e[?25l\e[32m?\e[39m \e[1mEnter the year you would liked to register for...\e[22m\e[0m \e[0m\e[2m(Use arrow keys)\e[22m\r\n\e[36m❯ 2019\e[39m \r\n  2020 \e[7D\e[7C"
+    - delay: 1244
+      content: "\r\r\n\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mEnter the year you would liked to register for...\e[22m\e[0m \e[0m\e[36m2019\e[39m\e[56D\e[56C\r\n\e[?25h\e[?25l\e[32m?\e[39m \e[1mChoose the academic term to register for...\e[22m\e[0m \e[0m\e[2m(Use arrow keys)\e[22m\r\n\e[36m❯ Winter\e[39m \r\n  Spring \r\n  Summer \r\n  Fall \e[7D\e[7C"
+    - delay: 1148
+      content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mChoose the academic term to register for...\e[22m\e[0m \e[0m\r\n  Winter \r\n\e[36m❯ Spring\e[39m \r\n  Summer \r\n  Fall \e[7D\e[7C"
+    - delay: 152
+      content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mChoose the academic term to register for...\e[22m\e[0m \e[0m\r\n  Winter \r\n  Spring \r\n\e[36m❯ Summer\e[39m \r\n  Fall \e[7D\e[7C"
+    - delay: 144
+      content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mChoose the academic term to register for...\e[22m\e[0m \e[0m\r\n  Winter \r\n  Spring \r\n  Summer \r\n\e[36m❯ Fall\e[39m \e[7D\e[7C"
+    - delay: 343
+      content: "\r\r\n\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mChoose the academic term to register for...\e[22m\e[0m \e[0m\e[36mFall\e[39m\e[50D\e[50C\r\n\e[?25h\e[?25l\e[32m?\e[39m \e[1mChoose a university location to register for...\e[22m\e[0m \e[0m\e[2m(Use arrow keys)\e[22m\r\n\e[36m❯ New Brunswick\e[39m \r\n  Newark \r\n  Camden \e[9D\e[9C"
+    - delay: 888
+      content: "\r\r\n\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mChoose a university location to register for...\e[22m\e[0m \e[0m\e[36mNew Brunswick\e[39m\e[63D\e[63C\r\n\e[?25h\e[?25l\e[32m?\e[39m \e[1mChoose your study level...\e[22m\e[0m \e[0m\e[2m(Use arrow keys)\e[22m\r\n\e[36m❯ Undergraduate\e[39m \r\n  Graduate \e[11D\e[11C"
+    - delay: 998
+      content: "\r\r\n\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mChoose your study level...\e[22m\e[0m \e[0m\e[36mUndergraduate\e[39m\e[42D\e[42C\r\n\e[?25h\e[32m?\e[39m \e[1mWould you like notifications?\e[22m\e[0m \e[0m\e[2m(Y/n) \e[22m\e[38D\e[38C"
+    - delay: 1109
+      content: "\r\r\n\e[2K\e[G\e[32m?\e[39m \e[1mWould you like notifications?\e[22m\e[0m \e[0m\e[36mYes\e[39m\e[35D\e[35C\r\n\e[32m?\e[39m \e[1mEnter a delay in seconds. Checking too often may be considered suspicious and could resu\r\nlt in an account or IP ban from rutgers. Defaults to 30 seconds.\e[22m\e[0m \e[0m\e[2m(30) \e[22m\e[70D\e[70C"
+    - delay: 269
+      content: "\r\r\n\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mEnter a delay in seconds. Checking too often may be considered suspicious and could resu\r\nlt in an account or IP ban from rutgers. Defaults to 30 seconds.\e[22m\e[0m \e[0m\e[36m30\e[39m\e[67D\e[67C\r\n\e[32m?\e[39m \e[1mEnter a maximum randomization amount in seconds for the timeout as a disguise. Defaults \r\nto 5 seconds.\e[22m\e[0m \e[0m\e[2m(5) \e[22m\e[18D\e[18C"
+    - delay: 277
+      content: "\r\r\n\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mEnter a maximum randomization amount in seconds for the timeout as a disguise. Defaults \r\nto 5 seconds.\e[22m\e[0m \e[0m\e[36m5\e[39m\e[15D\e[15C\r\n\e[32m?\e[39m \e[1mAre you running this program on the cloud? Eg: Heroku or c9.io...\e[22m\e[0m \e[0m\e[2m(y/N) \e[22m\e[74D\e[74C"
+    - delay: 327
+      content: "\r\r\n\e[2K\e[G\e[32m?\e[39m \e[1mAre you running this program on the cloud? Eg: Heroku or c9.io...\e[22m\e[0m \e[0m\e[36mNo\e[39m\e[70D\e[70C\r\n\e[32m?\e[39m \e[1mWould like to validate your index before registering?\e[22m\e[0m \e[0m\e[2m(Y/n) \e[22m\e[62D\e[62C"
+    - delay: 310
+      content: "\r\r\n\e[2K\e[G\e[32m?\e[39m \e[1mWould like to validate your index before registering?\e[22m\e[0m \e[0m\e[36mYes\e[39m\e[59D\e[59C\r\n"
+    - delay: 12
+      content: "\r\n\e[?25h"

@@ -7,7 +7,7 @@ const configure = require('./commands/configure');
 const register = require('./commands/register');
 const display = require('./commands/display');
 
-program.version('0.0.1')
+program.version('1.0.0')
     .description(`Command line interface to automated course registration for
         Rutgers University.`);
 
@@ -55,7 +55,7 @@ program
     .command('register [index]')
     .alias('r')
     .option('-v, --verbose', 'Log more information to console')
-    .option('-d, --debug', 'Runs puppeteer in non headless mode')
+    .option('-d, --debug', 'Runs puppeteer in non-headless mode')
     .option(
         '-t <time>',
         'Specify number of minutes to attempt registration',
@@ -63,8 +63,6 @@ program
     )
     .description('Allows user to register for a section of a course.')
     .action(async function(index, cmdObj) {
-        // console.log(index);
-        // console.log(cmdObj);
         await register({ index, ...cmdObj });
         process.exit(0);
     });
