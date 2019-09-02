@@ -113,3 +113,7 @@ See also the list of [contributors](https://github.com/fireteam99/cral-cli/graph
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+- Shoutout to [Terminalize](https://github.com/faressoft/terminalizer) for the dope command line screenshots
