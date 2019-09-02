@@ -130,6 +130,7 @@ const register = async cmdObj => {
                     `${configInfoTable.toString()}\n`;
             } else {
                 spinner.succeed('Index verification succeeded.');
+
                 // course information
                 const { title, courseString, subjectDescription } = course;
                 let { credits } = course;
@@ -324,10 +325,11 @@ const register = async cmdObj => {
                 }
                 await sleep(1000);
             }
-            ui.updateBottomBar('');
+            ui.updateBottomBar(''); // clears the ui bar
             currentDuration = process.hrtime(time)[0];
         }
 
+        // print out finishing information to user
         const finalDuration = process.hrtime(time)[0];
         console.log(
             chalk.yellow(`Registration attempt finished for index ${index}.`)
@@ -358,6 +360,7 @@ const register = async cmdObj => {
             }
         }
     } catch (err) {
+        // notification for an unexpected error
         if (!cloud && notification) {
             notifier.notify({
                 title: 'Error',

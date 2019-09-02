@@ -206,16 +206,17 @@ const registerForIndex = async ({
                     message = `Successfully registered for index: ${index}, with message: ${successMessage}`;
                     // screenshots the success
                     const successScreenshotName = `success-${Date.now()}.png`;
+                    const successScreenshotPath = path.join(
+                        __dirname,
+                        '..',
+                        'screenshots',
+                        successScreenshotName
+                    );
                     await webregPage.screenshot({
-                        path: path.join(
-                            __dirname,
-                            '..',
-                            'screenshots',
-                            successScreenshotName
-                        ),
+                        path: successScreenshotPath,
                         fullPage: true,
                     });
-                    screenshot = `Screenshot taken as: ${successScreenshotName}`;
+                    screenshot = `Screenshot taken at: ${successScreenshotPath}`;
                     wasAdded = true;
                 } else {
                     // look for a generalError message
@@ -241,16 +242,17 @@ const registerForIndex = async ({
                     } else {
                         // some other unknown error
                         const errorScreenshotName = `error-${Date.now()}.png}`;
+                        const errorScreenshotPath = path.join(
+                            __dirname,
+                            '..',
+                            'screenshots',
+                            errorScreenshotName
+                        );
                         await webregPage.screenshot({
-                            path: path.join(
-                                __dirname,
-                                '..',
-                                'screenshots',
-                                errorScreenshotName
-                            ),
+                            path: errorScreenshotPath,
                             fullPage: true,
                         });
-                        screenshot = `Screenshot taken as: ${errorScreenshotName}`;
+                        screenshot = `Screenshot taken at: ${errorScreenshotName}`;
                         throw new Error(
                             `Failed to register for index: ${index}, Due to unknown error.`
                         );

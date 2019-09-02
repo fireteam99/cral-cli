@@ -69,7 +69,7 @@ cral c
 ![demo-d.gif](docs/gifs/demo-d.gif)
 
 ### Register for Course
-**Description:** Register for a course by using `cral r` and following the prompts or directly passing in the index and time - `cral r <index #> -t <time to run in minutes>`. Note: not passing a time to run when passing in the index directly results in no time limit.
+**Description:** Register for a course by using `cral r` and following the prompts or directly passing in the index and time - `cral r <index #> -t <time to run in minutes>`. If the verify index option is turned on, cral will attempt to look up the index passed and display the section information along with a confomation prompt. Then, the program will check for a course opening on an interval defined by `timeout` and `randomization` (in configurations) and attempts to register if an opening is detected. Upon a successful registration or unexpected error, a screenshot will be taken and it's path outputted.
 
 **Command:** `cral register [index]` or `cral r [index]`
 
@@ -78,6 +78,11 @@ cral c
 - `-t <time>` Sets the amount of time you want the program to run. Note: this flag is ignored if you do not directly pass the index.
 - `-v` or `--verbose` Log more information to console.
 -  `-d` or `--debug` Runs puppeteer in non-headless mode.
+
+**Note:**
+ 
+- Not passing a time `-t <time>` to run when passing in the index directly results in no time limit.
+
 
 ![demo-r2.gif](docs/gifs/demo-r2.gif)
 
@@ -97,7 +102,7 @@ If you're running this on a cloud environment such as Heroku, CodeAnywhere, or C
 
 ## Contributing
 
-This is an open source project so feel free to fork and/or contribute at anytime. This project users the fork and pull request workflow. 
+This is an open source project so feel free to fork and/or contribute at anytime. This project uses the fork and pull request workflow. 
 
 ## Versioning
 
@@ -116,4 +121,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-- Shoutout to [Terminalize](https://github.com/faressoft/terminalizer) for the dope command line screenshots
+- Shout-out to [Terminalize](https://github.com/faressoft/terminalizer) for the dope command line screenshots
