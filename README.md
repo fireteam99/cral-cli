@@ -43,14 +43,14 @@ cral c
 **Flags:**
 
 - `-u` or `--username` Configure username
-- `-p` or `--password` Configure username
-- `-y` or `--year` Configure username
-- `-t` or `--term` Configure username
-- `-c` or `--campus` Configure username
-- `-l` or `--level` Configure username
-- `-n` or `--notification` Configure username
-- `-t` or `--timeout` Configure username
-- `-r` or `--randomization` Configure username
+- `-p` or `--password` Configure password
+- `-y` or `--year` Configure year
+- `-t` or `--term` Configure term
+- `-c` or `--campus` Configure campus
+- `-l` or `--level` Configure level
+- `-n` or `--notification` Configure notification
+- `-t` or `--timeout` Configure timeout
+- `-r` or `--randomization` Configure randomization
 - `-c` or `--cloud` Configure cloud
 - `-v` or `--verify` Configure index verification
 
