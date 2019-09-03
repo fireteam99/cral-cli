@@ -14,6 +14,13 @@ Make sure you have Node.js 8 or newer installed. You can do so directly [here](h
 
 ### Installing
 
+#### NPM
+Install the package globally so you can run it anywhere.
+
+```
+$ npm i cral-cli -g
+```
+
 #### Github
 Clone the repository to keep up with the latest changes.
 
@@ -34,7 +41,6 @@ This project uses Jest for tests.
 ```
 $ npm test
 ```
-
 
 ## Usage
 ### Set Configuration
@@ -106,6 +112,7 @@ If you're running this on a cloud environment such as Heroku, CodeAnywhere, or C
 -   [Puppeteer](https://pptr.dev) - A Node library to control Chrome/Chromium
 -   [Commander.js](https://github.com/tj/commander.js/) - Library for command line interfaces
 -   [Inquier.js](https://github.com/SBoudrias/Inquirer.js/) - Provided interactive command line prompts
+-   [node-notifier](https://www.npmjs.com/package/node-notifier) - Live notifications for Node.js
 
 ## Contributing
 
