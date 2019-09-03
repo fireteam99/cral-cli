@@ -18,21 +18,23 @@ Make sure you have Node.js 8 or newer installed. You can do so directly [here](h
 Clone the repository to keep up with the latest changes.
 
 ```
-git clone https://github.com/fireteam99/cral-cli.git
+$ git clone https://github.com/fireteam99/cral-cli.git
 ```
 
 Change directory to the cloned repository and create a symlink so you can run the cli anywhere
 
 ```
-cd cral-cli
-npm link
+$ cd cral-cli
+$ npm link
 ```
 
-Set up your configuration to begin using cral
+## Running the tests
+This project uses Jest for tests.
 
 ```
-cral c
+$ npm test
 ```
+
 
 ## Usage
 ### Set Configuration
@@ -92,7 +94,7 @@ Run `cral -h` or `cral --help` for instructions on how to use the cli.
 
 ## What's Next
  - Registration for multiple indexes
- - Ability to drop certain classes 
+ - Ability to drop certain conflicting classes when registering
  - More comprehensive tests
 
 ## Deployment
