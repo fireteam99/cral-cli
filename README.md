@@ -92,6 +92,7 @@ Run `cral -h` or `cral --help` for instructions on how to use the cli.
 
 ## What's Next
  - Registration for multiple indexes
+ - Ability to drop certain classes 
  - More comprehensive tests
 
 ## Deployment

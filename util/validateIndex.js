@@ -41,11 +41,12 @@ const validateIndex = async ({ index, year, term, campus, level }) => {
 module.exports = validateIndex;
 
 // (async () => {
-//     await validateIndex({
+//     const result = await validateIndex({
 //         index: '14502',
 //         year: '2019',
 //         term: '9',
 //         campus: 'NB',
 //         level: 'U',
 //     });
+//     console.log(result);
 // })();

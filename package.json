@@ -26,7 +26,6 @@
         "inquirer": "^6.5.0",
         "node-notifier": "^5.4.3",
         "node-persist": "^3.0.5",
-        "nodemon": "^1.18.10",
         "ora": "^3.4.0",
         "puppeteer": "^1.13.0"
     },
@@ -34,6 +33,7 @@
         "cral": "./cral.js"
     },
     "devDependencies": {
-        "jest": "^24.9.0"
+        "jest": "^24.9.0",
+        "nodemon": "^1.19.2"
     }
 }
