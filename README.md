@@ -59,7 +59,7 @@ $ npm test
 - `-n` or `--notification` Configure notification
 - `-t` or `--timeout` Configure timeout
 - `-r` or `--randomization` Configure randomization
-- `-c` or `--cloud` Configure cloud
+- `-o` or `--cloud` Configure cloud
 - `-v` or `--verify` Configure index verification
 
 ![demo-c.gif](docs/gifs/demo-c.gif)
