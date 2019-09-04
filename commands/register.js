@@ -41,8 +41,9 @@ const register = async cmdObj => {
                 {
                     type: 'confirm',
                     name: 'continue',
-                    message:
-                        'You need to configure cral first. Would like to continue?',
+                    message: chalk.yellow(
+                        'You need to configure cral first. Would like to continue?'
+                    ),
                 },
             ]);
             if (answer.confirm) {
@@ -50,7 +51,9 @@ const register = async cmdObj => {
                 await register();
                 return;
             } else {
-                console.log('Exiting... Cannot register until configured.');
+                console.log(
+                    chalk.red('Exiting... Cannot register until configured.')
+                );
                 return;
             }
         }

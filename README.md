@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Make sure you have Node.js 8 or newer installed. You can do so directly [here](https://nodejs.org/en/download/) or use [homebrew](https://changelog.com/posts/install-node-js-with-homebrew-on-os-x) if you're on macOS.
+Make sure you have Node.js 11 or newer installed. You can do so directly [here](https://nodejs.org/en/download/) or use [homebrew](https://changelog.com/posts/install-node-js-with-homebrew-on-os-x) if you're on macOS.
 
 ### Installing
 
@@ -71,7 +71,7 @@ $ npm test
 
 ### View Configuration
 
-**Description:** View your configuration settings using `cral d` or `cral display`. By default your password is is hidden - to view it pass in `-p` as a flag.
+**Description:** View your configuration settings. By default your password is is hidden - to view it pass in `-p` as a flag.
 
 **Command:** `cral d` or `cral configure`
 
@@ -80,6 +80,12 @@ $ npm test
 -   `-p` or `--password` Display password
 
 ![demo-d.gif](docs/gifs/demo-d.gif)
+
+### Reset Configuration
+
+**Description:** Reset your configuration settings. Will prompt you to confirm that you want to reset them.
+
+**Command:** `cral rs` or `cral reset`
 
 ### Register for Course
 

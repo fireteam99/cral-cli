@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const { prompt } = require('inquirer');
 
 const configure = require('./commands/configure');
 const register = require('./commands/register');
 const display = require('./commands/display');
+const reset = require('./commands/reset');
 
 program.version('1.0.0')
     .description(`Command line interface to automated course registration for
@@ -20,7 +20,6 @@ program.on('command:*', function() {
     process.exit(1);
 });
 
-// TODO: implement this
 program
     .command('display')
     .alias('d')
@@ -41,7 +40,7 @@ program
     .option('-c, --campus', 'Configure campus')
     .option('-l, --level', 'Configure level')
     .option('-n, --notification', 'Configure notification')
-    .option('-t, --timeout', 'Configure timeout')
+    .option('-i, --timeout', 'Configure timeout')
     .option('-r, --randomization', 'Configure randomization')
     .option('-o, --cloud', 'Configure cloud')
     .option('-v, --verifyIndex', 'Configure index verification')
@@ -66,6 +65,15 @@ program
     .description('Allows user to register for a section of a course.')
     .action(async function(index, cmdObj) {
         await register({ index, ...cmdObj });
+        process.exit(0);
+    });
+
+program
+    .command('reset')
+    .alias('rs')
+    .description(`Resets the user's configuration file.`)
+    .action(async function() {
+        await reset();
         process.exit(0);
     });
 
