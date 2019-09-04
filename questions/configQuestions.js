@@ -124,7 +124,7 @@ module.exports = [
     },
     {
         type: 'confirm',
-        name: 'verify',
+        name: 'verifyIndex',
         message: 'Would like to validate your index before registering?',
         default: true,
     },

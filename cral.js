@@ -44,7 +44,7 @@ program
     .option('-t, --timeout', 'Configure timeout')
     .option('-r, --randomization', 'Configure randomization')
     .option('-o, --cloud', 'Configure cloud')
-    .option('-v, --verify', 'Configure index verification')
+    .option('-v, --verifyIndex', 'Configure index verification')
     .description('Allows user to configure their registration options.')
     .action(async function(cmdObj) {
         await configure(cmdObj);
