@@ -47,6 +47,7 @@ program
     .option('-v, --verify', 'Configure index verification')
     .description('Allows user to configure their registration options.')
     .action(async function(cmdObj) {
+        await configure(cmdObj);
         process.exit(0);
     });
 
@@ -64,7 +65,6 @@ program
     .option('-p <password>', 'Overrides the configured password')
     .description('Allows user to register for a section of a course.')
     .action(async function(index, cmdObj) {
-        console.log(cmdObj);
         await register({ index, ...cmdObj });
         process.exit(0);
     });
