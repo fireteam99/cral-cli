@@ -86,6 +86,8 @@ $ npm test
 - `-t <time>` Sets the amount of time you want the program to run. Note: this flag is ignored if you do not directly pass the index.
 - `-v` or `--verbose` Log more information to console.
 -  `-d` or `--debug` Runs puppeteer in non-headless mode.
+-  `-u <username>` Override username used for this registration attempt.
+-  `-p <password>` Override password used for this registration attempt.
 
 **Note:**
  
@@ -99,7 +101,9 @@ $ npm test
 Run `cral -h` or `cral --help` for instructions on how to use the cli.
 
 ## What's Next
+
  - Registration for multiple indexes
+ - Re-do configuration system
  - Ability to drop certain conflicting classes when registering
  - More comprehensive tests
 

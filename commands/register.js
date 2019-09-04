@@ -236,7 +236,16 @@ const register = async cmdObj => {
         const time = process.hrtime();
         let currentDuration = -1;
 
-        const { timeout, randomization, username, password } = config;
+        const { timeout, randomization } = config;
+        let { username, password } = config;
+        // check to see if username or password was overriden
+        if (cmdObj.U != null) {
+            username = cmdObj.U;
+        }
+        if (cmdObj.P != null) {
+            password = cmdObj.P;
+        }
+        // set notification
         notification = config.notification;
         // console.log(`max duration: ${maxDuration}`);
         const { year, term, campus, level } = config;
