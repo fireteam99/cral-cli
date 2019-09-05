@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Make sure you have Node.js 11 or newer installed. You can do so directly [here](https://nodejs.org/en/download/) or use [homebrew](https://changelog.com/posts/install-node-js-with-homebrew-on-os-x) if you're on macOS.
+Make sure you have Node.js 8 or newer installed. You can do so directly [here](https://nodejs.org/en/download/) or use [homebrew](https://changelog.com/posts/install-node-js-with-homebrew-on-os-x) if you're on macOS.
 
 ### Installing
 
@@ -86,6 +86,7 @@ $ npm test
 **Description:** Reset your configuration settings. Will prompt you to confirm that you want to reset them.
 
 **Command:** `cral rs` or `cral reset`
+ode.js c
 
 ### Register for Course
 
@@ -114,6 +115,7 @@ Run `cral -h` or `cral --help` for instructions on how to use the cli.
 ## What's Next
 
 -   Registration for multiple indexes
+-   Verify log-in information
 -   Re-do configuration system
 -   Ability to drop certain conflicting classes when registering
 -   More comprehensive tests

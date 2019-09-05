@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
+const makeDir = require('make-dir');
 const path = require('path');
 
 const createReturnStatus = (index, hasRegistered, message, screenshot) => {
@@ -206,10 +206,15 @@ const registerForIndex = async ({
                     message = `Successfully registered for index: ${index}, with message: ${successMessage}`;
                     // screenshots the success
                     const successScreenshotName = `success-${Date.now()}.png`;
-                    const successScreenshotPath = path.join(
+                    const successScreenshotFolderPath = path.join(
                         __dirname,
                         '..',
-                        'screenshots',
+                        'screenshots'
+                    );
+                    // makes sure that the folder exists
+                    await makeDir(successScreenshotFolderPath);
+                    const successScreenshotPath = path.join(
+                        successScreenshotFolderPath,
                         successScreenshotName
                     );
                     await webregPage.screenshot({
@@ -242,10 +247,14 @@ const registerForIndex = async ({
                     } else {
                         // some other unknown error
                         const errorScreenshotName = `error-${Date.now()}.png}`;
-                        const errorScreenshotPath = path.join(
+                        const errorScreenshotFolderPath = path.join(
                             __dirname,
                             '..',
-                            'screenshots',
+                            'screenshots'
+                        );
+                        await makeDir(errorScreenshotFolderPath);
+                        const errorScreenshotPath = path.join(
+                            errorScreenshotFolderPath,
                             errorScreenshotName
                         );
                         await webregPage.screenshot({
@@ -254,7 +263,7 @@ const registerForIndex = async ({
                         });
                         screenshot = `Screenshot taken at: ${errorScreenshotName}`;
                         throw new Error(
-                            `Failed to register for index: ${index}, Due to unknown error.`
+                            `Failed to register for index: ${index}, Due to unknown error. ${screenshot}`
                         );
                         // await webregPage.waitFor(5000); // reduced time because we didn't ping the server
                     }
@@ -265,7 +274,7 @@ const registerForIndex = async ({
             // wasAdded = true;
         } while (!wasAdded && attempts <= retryLimit);
 
-        let hrend = process.hrtime(hrstart);
+        // let hrend = process.hrtime(hrstart);
         // exits program
         // console.log(`Made ${attempts} attempt(s) in ${hrend[0]} seconds.`);
         await webregPage.close();

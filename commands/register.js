@@ -347,14 +347,21 @@ const register = async cmdObj => {
             chalk.yellow(`Registration attempt finished for index ${index}.`)
         );
         const resultsTable = new Table({
-            head: ['Status', 'Duration'],
-            colWidths: [20, 20],
+            head: ['Status', 'Duration', 'Timestamp'],
+            colWidths: [20, 20, 35],
             wordWrap: true,
         });
+        const date = new Date();
+        const dateText = `${date.getFullYear()}-${date.getMonth() +
+            1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         const finalStatus = registered
             ? chalk.green('Succeeded')
             : chalk.red('Failed');
-        resultsTable.push([finalStatus, `${toHHMMSS(finalDuration)}`]);
+        resultsTable.push([
+            finalStatus,
+            `${toHHMMSS(finalDuration)}`,
+            dateText,
+        ]);
         console.log(resultsTable.toString());
         if (!cloud && notification) {
             if (registered) {
