@@ -27,7 +27,11 @@ module.exports = [
         type: 'list',
         name: 'year',
         message: 'Enter the year you would liked to register for...',
-        choices: ['2019', '2020'],
+        choices: [
+            new Date().getFullYear() - 1,
+            new Date().getFullYear(),
+            new Date().getFullYear() + 1,
+        ],
     },
     {
         type: 'list',
