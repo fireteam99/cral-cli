@@ -86,7 +86,6 @@ $ npm test
 **Description:** Reset your configuration settings. Will prompt you to confirm that you want to reset them.
 
 **Command:** `cral rs` or `cral reset`
-ode.js c
 
 ### Register for Course
 
