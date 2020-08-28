@@ -49,7 +49,7 @@ $ npm test
 
 ### Set Configuration
 
-**Description:** Set your configuration options. Running the command without any flags to set all settings. Alternatively, you can pass any number of optional flags to only configure specific settings.
+**Description:** Set your configuration options. Running the command without any flags to set all settings. Alternatively, you can pass any number of optional flags to only configure specific settings (only those settings will show up in the prompt).
 
 **Command:** `cral c` or `cral configure`
 
@@ -67,13 +67,19 @@ $ npm test
 -   `-o` or `--cloud` Configure cloud
 -   `-v` or `--verifyIndex` Configure index verification
 
+**Usage:**
+
+-   `cral c` Configures all settings
+-   `cral c -u -p` Configure username and password
+-   `cral c -l -c -v` Configure level, campus, and index verification
+
 ![demo-c.gif](docs/gifs/demo-c.gif)
 
 ### View Configuration
 
 **Description:** View your configuration settings. By default your password is is hidden - to view it pass in `-p` as a flag.
 
-**Command:** `cral d` or `cral configure`
+**Command:** `cral d` or `cral display`
 
 **Flags:**
 
