@@ -18,7 +18,7 @@
     },
     "homepage": "https://github.com/fireteam99/cral-cli#readme",
     "dependencies": {
-        "axios": "^0.19.0",
+        "axios": "^0.21.1",
         "chalk": "^2.4.2",
         "cli-progress": "^3.0.0",
         "cli-table2": "^0.2.0",
