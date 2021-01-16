@@ -12,7 +12,7 @@ program.version('1.0.0')
         Rutgers University.`);
 
 // error on unknown commands
-program.on('command:*', function() {
+program.on('command:*', function () {
     console.error(
         'Invalid command: %s\nSee --help for a list of available commands.',
         program.args.join(' ')
@@ -25,7 +25,7 @@ program
     .alias('d')
     .description(`Displays user configuration options.`)
     .option('-p, --password', 'Display password')
-    .action(async function(cmdObj) {
+    .action(async function (cmdObj) {
         await display(cmdObj);
         process.exit(0);
     });
@@ -45,7 +45,7 @@ program
     .option('-o, --cloud', 'Configure cloud')
     .option('-v, --verifyIndex', 'Configure index verification')
     .description('Allows user to configure their registration options.')
-    .action(async function(cmdObj) {
+    .action(async function (cmdObj) {
         await configure(cmdObj);
         process.exit(0);
     });
@@ -63,7 +63,7 @@ program
     .option('-u <username>', 'Overrides the configured username')
     .option('-p <password>', 'Overrides the configured password')
     .description('Allows user to register for a section of a course.')
-    .action(async function(index, cmdObj) {
+    .action(async function (index, cmdObj) {
         await register({ index, ...cmdObj });
         process.exit(0);
     });
@@ -72,7 +72,7 @@ program
     .command('reset')
     .alias('rs')
     .description(`Resets the user's configuration file.`)
-    .action(async function() {
+    .action(async function () {
         await reset();
         process.exit(0);
     });
