@@ -17,7 +17,7 @@ module.exports = async cmdObj => {
         if (updatedConfig == null) {
             updatedConfig = {};
         }
-        for (key of Object.keys(answers)) {
+        for (const key of Object.keys(answers)) {
             updatedConfig[key] = answers[key];
         }
         await storage.updateItem('config', updatedConfig);

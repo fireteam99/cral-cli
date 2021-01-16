@@ -17,6 +17,7 @@ const militaryToStandardTime = require('../util/militaryToStandardTime');
 const validateIndex = require('../util/validateIndex');
 const codeToTerm = require('../util/codeToTerm');
 const toHHMMSS = require('../util/toHHMMSS');
+const ConfigError = require('../errors/ConfigError');
 
 // define a sleep function to use
 const sleep = ms => {
@@ -157,7 +158,7 @@ const register = async cmdObj => {
                 if (instructorsText === '') {
                     instructorsText = 'N/A';
                 }
-                openStatus =
+                const openStatus =
                     openStatusText.charAt(0) +
                     openStatusText.slice(1).toLowerCase();
                 const sectionInfoTable = new Table({
@@ -174,7 +175,7 @@ const register = async cmdObj => {
                     colWidths: [9, 22, 10, 11, 6, 6],
                 });
 
-                for (meetingTime of meetingTimes) {
+                for (const meetingTime of meetingTimes) {
                     const {
                         meetingDay,
                         startTimeMilitary,
@@ -352,8 +353,9 @@ const register = async cmdObj => {
             wordWrap: true,
         });
         const date = new Date();
-        const dateText = `${date.getFullYear()}-${date.getMonth() +
-            1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        const dateText = `${date.getFullYear()}-${
+            date.getMonth() + 1
+        }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         const finalStatus = registered
             ? chalk.green('Succeeded')
             : chalk.red('Failed');
