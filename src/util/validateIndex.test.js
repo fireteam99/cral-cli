@@ -1,5 +1,7 @@
+/**
+ * @jest-environment node
+ */
 const validateIndex = require('./validateIndex');
-
 test('passing in index: 09084, year: 2019, term: 9, campus: NB, level: U, will result in the section/course information to return', async () => {
     const info = await validateIndex({
         index: '14502',
