@@ -21,6 +21,6 @@ module.exports = async () => {
             console.log(chalk.green('Successfully reset configurations'));
         }
     } catch (err) {
-        console.log(err);
+        handleUnexpectedError(err, cmdObj);
     }
 };

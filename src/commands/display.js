@@ -38,6 +38,6 @@ module.exports = async cmdObj => {
             });
         }
     } catch (err) {
-        console.log(chalk.red(err.message));
+        handleUnexpectedError(err, cmdObj);
     }
 };

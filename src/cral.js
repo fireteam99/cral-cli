@@ -9,7 +9,7 @@ const reset = require('./commands/reset');
 const fix = require('./commands/fix');
 
 program.version('1.0.0')
-    .description(`Command line interface to automated course registration for
+    .description(`Command line interface to automate course registration for
         Rutgers University.`);
 
 // error on unknown commands

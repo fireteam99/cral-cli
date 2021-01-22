@@ -20,7 +20,6 @@ module.exports = async cmdObj => {
         const updatedConfig = { ...config, ...answers };
         await writeConfig(updatedConfig);
     } catch (err) {
-        console.log(err);
-        console.log(chalk.red(err.message));
+        handleUnexpectedError(err, cmdObj);
     }
 };

@@ -415,10 +415,8 @@ const register = async cmdObj => {
         if (regSpinner) {
             regSpinner.fail(err.message);
         }
-        // print out the error
-        console.error(
-            chalk.red(cmdObj.debug == null ? err.message : err.stack)
-        );
+        // print out the unexpected error
+        handleUnexpectedError(err, cmdObj);
     }
 };
 
