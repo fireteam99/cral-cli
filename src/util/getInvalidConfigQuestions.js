@@ -1,10 +1,7 @@
-const readConfig = require('./readConfig');
 const configQuestions = require('../questions/configQuestions');
 
 // returns an array of questions for fields that failed validation
-async function validateConfig() {
-    const config = await readConfig();
-
+function getInvalidConfigQuestions(config) {
     // find the config properties that failed validation
     const failed = configQuestions.filter(({ name, validate }) => {
         configProp = config[name];
@@ -23,4 +20,4 @@ async function validateConfig() {
     return failed;
 }
 
-module.exports = validateConfig;
+module.exports = getInvalidConfigQuestions;

@@ -33,6 +33,7 @@ program
     .alias('d')
     .description(`Displays user configuration options.`)
     .option('-p, --password', 'Display password')
+    .option('-v', '--verbose', 'More detailed error messages')
     .action(async function (cmdObj) {
         try {
             await display(cmdObj);
@@ -55,7 +56,8 @@ program
     .option('-i, --timeout', 'Configure timeout')
     .option('-r, --randomization', 'Configure randomization')
     .option('-o, --cloud', 'Configure cloud')
-    .option('-v, --verifyIndex', 'Configure index verification')
+    .option('-vi --verifyIndex', 'Configure index verification')
+    .option('-v', '--verbose', 'More detailed error messages')
     .description('Allows user to configure their registration options.')
     .action(async function (cmdObj) {
         try {
@@ -110,6 +112,7 @@ program
 program
     .command('reset')
     .alias('rs')
+    .option('-v', '--verbose', 'More detailed error messages')
     .description(`Resets the user's configuration file.`)
     .action(async function () {
         await reset();

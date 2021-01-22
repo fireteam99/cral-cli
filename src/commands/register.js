@@ -16,7 +16,7 @@ const validateIndex = require('../util/validateIndex');
 const codeToTerm = require('../util/codeToTerm');
 const toHHMMSS = require('../util/toHHMMSS');
 const readConfig = require('../util/readConfig');
-const validateConfig = require('../util/validateConfig');
+const getInvalidConfigQuestions = require('../util/getInvalidConfigQuestions');
 const fix = require('./fix');
 
 // define a sleep function to use
@@ -58,7 +58,7 @@ const register = async cmdObj => {
         }
 
         // check for config errors
-        const invalidQuestions = await validateConfig(config);
+        const invalidQuestions = getInvalidConfigQuestions(config);
         if (invalidQuestions.length > 0) {
             // prompt the user to fix configuration errors
             const answer = await prompt([
