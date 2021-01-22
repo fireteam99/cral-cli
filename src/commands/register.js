@@ -1,11 +1,9 @@
-const storage = require('node-persist');
 const inquirer = require('inquirer');
 const { prompt } = inquirer;
 const ui = new inquirer.ui.BottomBar();
 const Table = require('cli-table2');
 const ora = require('ora');
 const notifier = require('node-notifier');
-const path = require('path');
 const chalk = require('chalk');
 
 const configure = require('./configure');
@@ -18,6 +16,7 @@ const validateIndex = require('../util/validateIndex');
 const codeToTerm = require('../util/codeToTerm');
 const toHHMMSS = require('../util/toHHMMSS');
 const ConfigError = require('../errors/ConfigError');
+const readConfig = require('../util/readConfig');
 
 // define a sleep function to use
 const sleep = ms => {
@@ -31,10 +30,8 @@ const register = async cmdObj => {
     let notification = false;
     let cloud = 'true';
     try {
-        // read in config from node persist
-        await storage.init({ dir: path.join(__dirname, '..', 'storage') });
-
-        const config = await storage.getItem('config');
+        // read in config from file
+        const config = await readConfig();
 
         if (config == null) {
             // prompt the user to set their configuration

@@ -1,8 +1,9 @@
 const { prompt } = require('inquirer');
-const configQuestions = require('../questions/configQuestions');
-const storage = require('node-persist');
-const path = require('path');
 const chalk = require('chalk');
+
+const configQuestions = require('../questions/configQuestions');
+const readConfig = require('../util/readConfig');
+const writeConfig = require('../util/writeConfig');
 
 module.exports = async cmdObj => {
     // check flags to see which questions to prmopt
@@ -12,15 +13,12 @@ module.exports = async cmdObj => {
             selectedQuestions.length == 0
                 ? await prompt(configQuestions)
                 : await prompt(selectedQuestions);
-        await storage.init({ dir: path.join(__dirname, '..', 'storage') });
-        let updatedConfig = await storage.getItem('config');
-        if (updatedConfig == null) {
-            updatedConfig = {};
+        let config = await readConfig();
+        if (config == null) {
+            config = {};
         }
-        for (const key of Object.keys(answers)) {
-            updatedConfig[key] = answers[key];
-        }
-        await storage.updateItem('config', updatedConfig);
+        const updatedConfig = { ...config, ...answers };
+        await writeConfig(updatedConfig);
     } catch (err) {
         console.log(chalk.red(err.message));
     }

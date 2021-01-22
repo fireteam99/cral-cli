@@ -92,7 +92,7 @@ const registerForIndex = async ({
         );
         // console.log(semesterValues);
 
-        // selects the choosen semester and clicks submit
+        // selects the choosen semester and clicks submit should match format of "{term}{year}" ex: "02021"
         const [chosenSemester] = semesterValues.filter(
             sv => sv.value === `${term}${year}`
         );
