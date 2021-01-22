@@ -4,7 +4,6 @@ const chalk = require('chalk');
 const configQuestions = require('../questions/configQuestions');
 const readConfig = require('../util/readConfig');
 const writeConfig = require('../util/writeConfig');
-const handleUnexpectedError = require('../util/handleUnexpectedError');
 
 module.exports = async cmdObj => {
     // check flags to see which questions to prompt
@@ -20,6 +19,6 @@ module.exports = async cmdObj => {
         const updatedConfig = { ...config, ...answers };
         await writeConfig(updatedConfig);
     } catch (err) {
-        handleUnexpectedError(err, cmdObj);
+        throw err;
     }
 };

@@ -1,5 +1,6 @@
 const { prompt } = require('inquirer');
 const chalk = require('chalk');
+
 const writeConfig = require('../util/writeConfig');
 
 module.exports = async () => {
@@ -21,6 +22,6 @@ module.exports = async () => {
             console.log(chalk.green('Successfully reset configurations'));
         }
     } catch (err) {
-        handleUnexpectedError(err, cmdObj);
+        throw err;
     }
 };

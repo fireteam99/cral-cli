@@ -38,6 +38,6 @@ module.exports = async cmdObj => {
             });
         }
     } catch (err) {
-        handleUnexpectedError(err, cmdObj);
+        throw err;
     }
 };

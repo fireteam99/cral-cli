@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const program = require('commander');
+const chalk = require('chalk');
 
 const configure = require('./commands/configure');
 const register = require('./commands/register');
@@ -22,9 +23,10 @@ program.on('command:*', function () {
 });
 
 // deal with any fatal unexpected errors
-const handleError = err => {
-    console.error('An unexpected error occured...');
-    console.error(err.stack);
+const handleError = (err, cmdObj) => {
+    console.error(
+        chalk.red(cmdObj && cmdObj.verbose ? err.stack : err.message)
+    );
     process.exit(1);
 };
 
@@ -39,7 +41,7 @@ program
             await display(cmdObj);
             process.exit(0);
         } catch (err) {
-            handleError(err);
+            handleError(err, cmdObj);
         }
     });
 
@@ -64,7 +66,7 @@ program
             await configure(cmdObj);
             process.exit(0);
         } catch (err) {
-            handleError(err);
+            handleError(err, cmdObj);
         }
     });
 
@@ -80,7 +82,7 @@ program
             await fix(cmdObj);
             process.exit(0);
         } catch (err) {
-            handleError(err);
+            handleError(err, cmdObj);
         }
     });
 
@@ -105,7 +107,7 @@ program
             await register({ index, ...cmdObj });
             process.exit(0);
         } catch (err) {
-            handleError(err);
+            handleError(err, cmdObj);
         }
     });
 

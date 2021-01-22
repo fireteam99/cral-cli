@@ -7,6 +7,8 @@ const notifier = require('node-notifier');
 const chalk = require('chalk');
 
 const configure = require('./configure');
+const fix = require('./fix');
+
 const soc = require('../apis/soc');
 const registerForIndex = require('../util/registerForIndex');
 const registerQuestions = require('../questions/registerQuestions');
@@ -17,7 +19,6 @@ const codeToTerm = require('../util/codeToTerm');
 const toHHMMSS = require('../util/toHHMMSS');
 const readConfig = require('../util/readConfig');
 const getInvalidConfigQuestions = require('../util/getInvalidConfigQuestions');
-const fix = require('./fix');
 
 // define a sleep function to use
 const sleep = ms => {
@@ -103,9 +104,8 @@ const register = async cmdObj => {
 
         // check to see if the index is in the proper format
         if (!index.match(/^\d{5}$/)) {
-            console.log('failed');
             throw new Error(
-                `Index: "${index}" is not the correct format. It must be a 5 digit non-negative integer.`
+                `Index: "${index}" is not valid. It must be a 5 digit non-negative integer.`
             );
         }
 
@@ -415,8 +415,8 @@ const register = async cmdObj => {
         if (regSpinner) {
             regSpinner.fail(err.message);
         }
-        // print out the unexpected error
-        handleUnexpectedError(err, cmdObj);
+        // throw the error
+        throw err;
     }
 };
 
