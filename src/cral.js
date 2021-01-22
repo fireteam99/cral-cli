@@ -6,6 +6,7 @@ const configure = require('./commands/configure');
 const register = require('./commands/register');
 const display = require('./commands/display');
 const reset = require('./commands/reset');
+const fix = require('./commands/fix');
 
 program.version('1.0.0')
     .description(`Command line interface to automated course registration for
@@ -20,14 +21,25 @@ program.on('command:*', function () {
     process.exit(1);
 });
 
+// deal with any fatal unexpected errors
+const handleError = err => {
+    console.error('An unexpected error occured...');
+    console.error(err.stack);
+    process.exit(1);
+};
+
 program
     .command('display')
     .alias('d')
     .description(`Displays user configuration options.`)
     .option('-p, --password', 'Display password')
     .action(async function (cmdObj) {
-        await display(cmdObj);
-        process.exit(0);
+        try {
+            await display(cmdObj);
+            process.exit(0);
+        } catch (err) {
+            handleError(err);
+        }
     });
 
 program
@@ -46,14 +58,37 @@ program
     .option('-v, --verifyIndex', 'Configure index verification')
     .description('Allows user to configure their registration options.')
     .action(async function (cmdObj) {
-        await configure(cmdObj);
-        process.exit(0);
+        try {
+            await configure(cmdObj);
+            process.exit(0);
+        } catch (err) {
+            handleError(err);
+        }
+    });
+
+program
+    .command('fix')
+    .alias('f')
+    .option('-v', '--verbose', 'More detailed error messages')
+    .description(
+        'Prompts the user to set any missing/invalid configuration fields.'
+    )
+    .action(async function (cmdObj) {
+        try {
+            await fix(cmdObj);
+            process.exit(0);
+        } catch (err) {
+            handleError(err);
+        }
     });
 
 program
     .command('register [index]')
     .alias('r')
-    .option('-v, --verbose', 'Log more information to console')
+    .option(
+        '-v, --verbose',
+        'Log more information to console and more detailed error messages'
+    )
     .option('-d, --debug', 'Runs puppeteer in non-headless mode')
     .option(
         '-t <time>',
@@ -64,8 +99,12 @@ program
     .option('-p <password>', 'Overrides the configured password')
     .description('Allows user to register for a section of a course.')
     .action(async function (index, cmdObj) {
-        await register({ index, ...cmdObj });
-        process.exit(0);
+        try {
+            await register({ index, ...cmdObj });
+            process.exit(0);
+        } catch (err) {
+            handleError(err);
+        }
     });
 
 program

@@ -31,7 +31,7 @@ module.exports = async cmdObj => {
                             validate && validate(value) !== true
                                 ? chalk.red(value) +
                                   `\n    ${chalk.redBright(validate(value))}`
-                                : value
+                                : chalk.green(value)
                         }`
                     );
                 }

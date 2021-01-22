@@ -6,14 +6,16 @@ async function validateConfig() {
     const config = await readConfig();
 
     // find the config properties that failed validation
-    const failed = configQuestions.filter(q => {
-        configProp = config[q.name];
+    const failed = configQuestions.filter(({ name, validate }) => {
+        configProp = config[name];
         // fail if config property is missing
         if (configProp == null) {
             return true;
         }
-        // try to validate the config property
-        if (q.validate && !q.validate(configProp)) {
+        // fail if there is a validation function and it fails
+        // note that `q.validate` return a string if is invalid
+        // and true if valid
+        if (validate && validate(configProp) !== true) {
             return true;
         }
         return false;

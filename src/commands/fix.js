@@ -4,21 +4,23 @@ const chalk = require('chalk');
 const configQuestions = require('../questions/configQuestions');
 const readConfig = require('../util/readConfig');
 const writeConfig = require('../util/writeConfig');
+const validateConfig = require('../util/validateConfig');
 
 module.exports = async cmdObj => {
-    // check flags to see which questions to prompt
-    const selectedQuestions = configQuestions.filter(q => cmdObj[q.name]);
+    // check to see if there are any invalid configs to fix
+    const config = await readConfig();
+    const questions =
+        config == null ? configQuestions : await validateConfig(config);
+    if (questions.length === 0) {
+        console.log(chalk.green('Configuration valid. Nothig to fix.'));
+        return;
+    }
     try {
-        const answers = await prompt(
-            selectedQuestions.length == 0 ? configQuestions : selectedQuestions
-        );
-        let config = await readConfig();
-        if (config == null) {
-            config = {};
-        }
+        const answers = await prompt(questions);
         const updatedConfig = { ...config, ...answers };
         await writeConfig(updatedConfig);
     } catch (err) {
+        console.log(err);
         console.log(chalk.red(err.message));
     }
 };

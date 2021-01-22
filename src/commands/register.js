@@ -15,8 +15,9 @@ const militaryToStandardTime = require('../util/militaryToStandardTime');
 const validateIndex = require('../util/validateIndex');
 const codeToTerm = require('../util/codeToTerm');
 const toHHMMSS = require('../util/toHHMMSS');
-const ConfigError = require('../errors/ConfigError');
 const readConfig = require('../util/readConfig');
+const validateConfig = require('../util/validateConfig');
+const fix = require('./fix');
 
 // define a sleep function to use
 const sleep = ms => {
@@ -33,6 +34,7 @@ const register = async cmdObj => {
         // read in config from file
         const config = await readConfig();
 
+        // check for missing config
         if (config == null) {
             // prompt the user to set their configuration
             const answer = await prompt([
@@ -44,10 +46,9 @@ const register = async cmdObj => {
                     ),
                 },
             ]);
-            if (answer.confirm) {
-                await configure();
-                await register();
-                return;
+            if (answer.continue) {
+                // have user set configuration
+                await configure({});
             } else {
                 console.log(
                     chalk.red('Exiting... Cannot register until configured.')
@@ -55,6 +56,33 @@ const register = async cmdObj => {
                 return;
             }
         }
+
+        // check for config errors
+        const invalidQuestions = await validateConfig(config);
+        if (invalidQuestions.length > 0) {
+            // prompt the user to fix configuration errors
+            const answer = await prompt([
+                {
+                    type: 'confirm',
+                    name: 'continue',
+                    message: chalk.yellow(
+                        'There are some missing/invalid configuration options that need to be fixed. Would like to continue?'
+                    ),
+                },
+            ]);
+            if (answer.continue) {
+                // have user fix errors
+                await fix();
+            } else {
+                console.log(
+                    chalk.red(
+                        'Exiting... Cannot register with invalid configuration.'
+                    )
+                );
+                return;
+            }
+        }
+
         const { cloud } = config;
         let index = null;
         let duration = null;
@@ -75,8 +103,9 @@ const register = async cmdObj => {
 
         // check to see if the index is in the proper format
         if (!index.match(/^\d{5}$/)) {
+            console.log('failed');
             throw new Error(
-                `Error, index: ${index} is not the correct format. It must be a 5 digit non-negative integer.`
+                `Index: "${index}" is not the correct format. It must be a 5 digit non-negative integer.`
             );
         }
 
@@ -85,12 +114,6 @@ const register = async cmdObj => {
 
         // verify the index if configured
         if (verifyIndex) {
-            if (config == null) {
-                throw new ConfigError(
-                    'Error, cral configuration has not been set. Please run "cral config" before trying again.',
-                    0
-                );
-            }
             // destructure config
             const { year, term, campus, level } = config;
 
@@ -126,7 +149,7 @@ const register = async cmdObj => {
             if (section == null) {
                 spinner.fail('Index verification failed.');
                 confirmQuestion =
-                    `It appears the section: ${index} you are trying to register for is invalid. Would you like to continue anyways?\n` +
+                    `It appears the section: "${index}" you are trying to register for is invalid. Would you like to continue anyways?\n` +
                     `Config Information:\n` +
                     `${configInfoTable.toString()}\n`;
             } else {
@@ -201,7 +224,7 @@ const register = async cmdObj => {
                 }
 
                 confirmQuestion =
-                    `You are attempting to register for section ${index}. Would you like to continue?\n` +
+                    `You are attempting to register for section "${index}". Would you like to continue?\n` +
                     `Course Information:\n` +
                     `${courseInfoTable.toString()}\n` +
                     `Section Information:\n` +
@@ -342,7 +365,7 @@ const register = async cmdObj => {
         // print out finishing information to user
         const finalDuration = process.hrtime(time)[0];
         console.log(
-            chalk.yellow(`Registration attempt finished for index ${index}.`)
+            chalk.yellow(`Registration attempt finished for index "${index}".`)
         );
         const resultsTable = new Table({
             head: ['Status', 'Duration', 'Timestamp'],
@@ -367,13 +390,13 @@ const register = async cmdObj => {
                 notifier.notify({
                     title: 'Succeeded',
                     message: chalk.green(
-                        `Registration for ${index} succeeded...`
+                        `Registration for "${index}" succeeded...`
                     ),
                 });
             } else {
                 notifier.notify({
                     title: 'Failed',
-                    message: chalk.red(`Registration for ${index} failed...`),
+                    message: chalk.red(`Registration for "${index}" failed...`),
                 });
             }
         }
@@ -392,9 +415,10 @@ const register = async cmdObj => {
         if (regSpinner) {
             regSpinner.fail(err.message);
         }
-        if (cmdObj.debug != null) {
-            console.log(chalk.red(err));
-        }
+        // print out the error
+        console.error(
+            chalk.red(cmdObj.debug == null ? err.message : err.stack)
+        );
     }
 };
 

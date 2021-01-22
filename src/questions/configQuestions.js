@@ -37,14 +37,10 @@ module.exports = [
             if (!v) {
                 return 'Year (year) cannot be empty.';
             }
-            if (
-                (typeof v === 'string' || v instanceof String) &&
-                v.length == 4 &&
-                /^\d+$/.test(v)
-            ) {
+            if (Number.isInteger(v) && v.toString().length === 4) {
                 return true;
             }
-            return 'Year (year) must be a four digit string.';
+            return 'Year (year) must be a four digit integer.';
         },
     },
     {
