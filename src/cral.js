@@ -58,7 +58,7 @@ program
     .option('-i, --timeout', 'Configure timeout')
     .option('-r, --randomization', 'Configure randomization')
     .option('-o, --cloud', 'Configure cloud')
-    .option('-vi --verifyIndex', 'Configure index verification')
+    .option('-iv --verifyIndex', 'Configure index verification')
     .option('-v', '--verbose', 'More detailed error messages')
     .description('Allows user to configure their registration options.')
     .action(async function (cmdObj) {

@@ -192,6 +192,7 @@ const registerForIndex = async ({
                     const successScreenshotFolderPath = path.join(
                         __dirname,
                         '..',
+                        '..',
                         'screenshots'
                     );
                     // makes sure that the folder exists
@@ -232,6 +233,7 @@ const registerForIndex = async ({
                         const errorScreenshotName = `error-${Date.now()}.png}`;
                         const errorScreenshotFolderPath = path.join(
                             __dirname,
+                            '..',
                             '..',
                             'screenshots'
                         );

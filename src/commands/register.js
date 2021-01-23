@@ -9,16 +9,16 @@ const chalk = require('chalk');
 const configure = require('./configure');
 const fix = require('./fix');
 
-const soc = require('../apis/soc');
 const registerForIndex = require('../util/registerForIndex');
 const registerQuestions = require('../questions/registerQuestions');
 const dayFromLetter = require('../util/dayFromLetter');
 const militaryToStandardTime = require('../util/militaryToStandardTime');
-const validateIndex = require('../util/validateIndex');
+const getSectionInfo = require('../util/getSectionInfo');
 const codeToTerm = require('../util/codeToTerm');
 const toHHMMSS = require('../util/toHHMMSS');
 const readConfig = require('../util/readConfig');
 const getInvalidConfigQuestions = require('../util/getInvalidConfigQuestions');
+const sectionOpen = require('../util/sectionOpen');
 
 // define a sleep function to use
 const sleep = ms => {
@@ -123,8 +123,8 @@ const register = async cmdObj => {
                 text: 'Verifying index, this might take a moment...',
             }).start();
 
-            // validate the index
-            const info = await validateIndex({
+            // get index information
+            const info = await getSectionInfo({
                 index,
                 year,
                 term,
@@ -280,18 +280,16 @@ const register = async cmdObj => {
                 text: 'Checking for opening...',
             }).start();
             // check the api to see if the class is open
-            const response = await soc.get('/openSections.gz', {
-                params: {
-                    year,
-                    term,
-                    campus,
-                    level,
-                },
+            const sectionIsOpen = await sectionOpen({
+                index,
+                year,
+                term,
+                campus,
+                level,
             });
-            const openSections = response.data;
             checkSpinner.stop();
             // attempt to register if the section is open
-            if (openSections.includes(index)) {
+            if (sectionIsOpen) {
                 openingFound = true;
                 let puppeteerOptions = {};
                 if (cloud) {

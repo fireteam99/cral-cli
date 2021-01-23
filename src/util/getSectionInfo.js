@@ -1,6 +1,7 @@
 const soc = require('../apis/soc');
+
 // checks to see if an index is valid and returns some data about that index
-const validateIndex = async ({ index, year, term, campus, level }) => {
+const getSectionInfo = async ({ index, year, term, campus, level }) => {
     try {
         // get a list of all the availible courses
         const response = await soc.get('/courses.gz', {
@@ -38,10 +39,10 @@ const validateIndex = async ({ index, year, term, campus, level }) => {
     }
 };
 
-module.exports = validateIndex;
+module.exports = getSectionInfo;
 
 // (async () => {
-//     const result = await validateIndex({
+//     const result = await getSectionInfo({
 //         index: '14502',
 //         year: '2019',
 //         term: '9',
