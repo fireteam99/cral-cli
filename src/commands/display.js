@@ -20,9 +20,7 @@ module.exports = async cmdObj => {
                     );
                 } else if (name === 'password' && !cmdObj.password) {
                     console.log(
-                        `  ${chalk.yellow(name)}: ${'*'.repeat(
-                            value.length - 1
-                        )}`
+                        `  ${chalk.yellow(name)}: ${'*'.repeat(value.length)}`
                     );
                 } else {
                     // check to see if the config entry is valid

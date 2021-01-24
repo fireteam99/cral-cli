@@ -24,9 +24,9 @@
         "cli-table2": "^0.2.0",
         "commander": "^2.20.0",
         "inquirer": "^6.5.0",
+        "jsonfile": "^6.1.0",
         "make-dir": "^3.0.0",
         "node-notifier": "^5.4.3",
-        "node-persist": "^3.0.5",
         "ora": "^3.4.0",
         "puppeteer": "^1.13.0"
     },

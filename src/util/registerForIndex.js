@@ -16,10 +16,10 @@ const registerForIndex = async ({
     index,
     term,
     year,
-    baseTimeout,
-    puppeteerOptions,
-    randomization,
-    retryLimit,
+    baseTimeout = 1,
+    randomization = 0,
+    retryLimit = 3,
+    puppeteerOptions = {},
 }) => {
     // console.log(index);
     let browser = null;

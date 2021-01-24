@@ -1,8 +1,10 @@
 # cral-cli
 
-A command line interface that makes registering for courses at Rutgers University easier. Makes use of [Rutgers API](http://api.rutgers.edu/) and [Puppeteer](https://github.com/GoogleChrome/puppeteer) to poll for openings and register for classes respectively.
+> ⚠️ Rutgers changed the CAS login page January 10th 2021. Please upgrade to version 2 or higher for everything to function properly.
 
-![demo-r1.gif](docs/gifs/demo-r1.gif)
+A command line interface that makes registering for courses at Rutgers University easy. Makes use of [Rutgers API](http://api.rutgers.edu/) and [Puppeteer](https://github.com/GoogleChrome/puppeteer) to poll for openings and register for classes respectively.
+
+![demo-r1.gif](public/gifs/demo-r1.gif)
 
 ## Getting Started
 
@@ -55,37 +57,53 @@ $ npm test
 
 **Flags:**
 
--   `-u` or `--username` Configure username
--   `-p` or `--password` Configure password
--   `-y` or `--year` Configure year
--   `-t` or `--term` Configure term
--   `-c` or `--campus` Configure campus
--   `-l` or `--level` Configure level
--   `-n` or `--notification` Configure notification
--   `-t` or `--timeout` Configure timeout
--   `-r` or `--randomization` Configure randomization
--   `-o` or `--cloud` Configure cloud
--   `-v` or `--verifyIndex` Configure index verification
+-   `-u` or `--username` Configure username.
+-   `-p` or `--password` Configure password.
+-   `-y` or `--year` Configure year.
+-   `-t` or `--term` Configure term.
+-   `-c` or `--campus` Configure campus.
+-   `-l` or `--level` Configure level.
+-   `-n` or `--notification` Configure notification.
+-   `-t` or `--timeout` Configure timeout.
+-   `-r` or `--randomization` Configure randomization.
+-   `-o` or `--cloud` Configure cloud.
+-   `-iv` or `--verifyIndex` Configure index verification.
+-   `-v` or `--verbose` More detailed error messages.
 
 **Usage:**
 
--   `cral c` Configures all settings
--   `cral c -u -p` Configure username and password
--   `cral c -l -c -v` Configure level, campus, and index verification
+-   `cral c` Configures all settings.
+-   `cral c -u -p` Configure username and password.
+-   `cral c -l -c -iv` Configure level, campus, and index verification.
 
-![demo-c.gif](docs/gifs/demo-c.gif)
+![demo-c.gif](public/gifs/demo-c.gif)
 
 ### View Configuration
 
 **Description:** View your configuration settings. By default your password is is hidden - to view it pass in `-p` as a flag.
 
+> ℹ️ Invalid configuration options will show up as red.
+
 **Command:** `cral d` or `cral display`
 
 **Flags:**
 
--   `-p` or `--password` Display password
+-   `-p` or `--password` Display password.
+-   `-v` or `--verbose` More detailed error messages.
 
-![demo-d.gif](docs/gifs/demo-d.gif)
+![demo-d.gif](public/gifs/demo-d.gif)
+
+### Fix Configuration
+
+**Description:** Fix any errors that are present in your configuration settings.
+
+**Command:** `cral f` or `cral fix`
+
+**Flags:**
+
+-   `-v` or `--verbose` More detailed error messages.
+
+![demo-f.gif](public/gifs/demo-f.gif)
 
 ### Reset Configuration
 
@@ -102,26 +120,204 @@ $ npm test
 **Flags:**
 
 -   `-t <time>` Sets the amount of time you want the program to run. Note: this flag is ignored if you do not directly pass the index.
--   `-v` or `--verbose` Log more information to console.
--   `-d` or `--debug` Runs puppeteer in non-headless mode.
 -   `-u <username>` Override username used for this registration attempt.
 -   `-p <password>` Override password used for this registration attempt.
+-   `-v` or `--verbose` Log more information to console and more detailed error messages.
+-   `-d` or `--debug` Runs puppeteer in non-headless mode.
 
 **Note:**
 
 -   Not passing a time `-t <time>` to run when passing in the index directly results in no time limit.
 
-![demo-r2.gif](docs/gifs/demo-r2.gif)
+![demo-r2.gif](public/gifs/demo-r2.gif)
 
 ### Help
 
 Run `cral -h` or `cral --help` for instructions on how to use the cli.
 
+## API
+
+Some of the core functions that cral-cli depends on are availible to be called programmatically. Please note that this package has not been tested on the browser and probably won't work.
+
+```js
+// common.js
+const cral = require('cral-cli');
+
+// esm
+import cral from 'cral-cali';
+```
+
+### `cral.getCASCookies(username, password, [puppeteerOptions])`
+
+---
+
+`getCASCookies` is an async function used to grab the cookies used for authenticating a user for [Webreg](https://sims.rutgers.edu/webreg/) using the [Central Authorization System](https://cas.rutgers.edu/login). [puppeteerOptions](https://pptr.dev/#?product=Puppeteer&version=v5.5.0&show=api-puppeteerlaunchoptions) defines an object that is passed as the launch options to puppeteer. Returns a promise that resolves into the [page cookies](https://pptr.dev/#?product=Puppeteer&version=v5.5.0&show=api-pagecookiesurls).
+
+**Arguments:**
+
+-   username: `string`
+-   password: `string`
+-   puppeteerOptions = {}: [`Object`](https://pptr.dev/#?product=Puppeteer&version=v5.5.0&show=api-puppeteerlaunchoptions) - launch options for Puppeteer
+
+**Returns:** [`Promise<Object>`](<(https://pptr.dev/#?product=Puppeteer&version=v5.5.0&show=api-pagecookiesurls)>)
+
+```js
+// promises
+cral.getCASCookies('user', 'pass')
+    .then(cookies => console.log(cookies))
+    .catch(err => console.error(err));
+
+// async await
+(async () => {
+    try {
+        const cookies = await cral.getCASCookies('user', 'pass', {
+            headless: false,
+        });
+    } catch (err) {
+        console.error(err);
+    }
+})();
+```
+
+### `registerForIndex({ username, password, index, term, year, [baseTimeout], [randomization], [retryLimit], [puppeteerOptions] })`
+
+---
+
+`registerForIndex` is an async function that uses Puppeteer to register for classes through [Webreg](https://sims.rutgers.edu/webreg). Returns a promise that resolves into a return status object.
+
+**Arguments:**
+
+-   username: `string`
+-   password: `string`
+-   index: `string` - five digit string representing a section number, ex: '12345'
+-   term: `string` - one digit string representing month (indexed by 0) each term starts on: '0' for winter, '1' for spring, '7' for summer, '9' for fall
+-   year: `int`
+-   baseTimeout = 1: `int` - seconds to wait before trying again if attempt fails, defaults to 1
+-   randomization = 0: `int` - a randomization amount added to the `baseTimeout`, defaults to 0
+-   retryLimit = 3: `int` - number of times to retry if attempt fails before giving up, defaults to 3
+-   puppeteerOptions = {}: [`Object`](https://pptr.dev/#?product=Puppeteer&version=v5.5.0&)
+-   show=api-puppeteerlaunchoptions) - launch options for Puppeteer
+
+**Returns:** A promise that resolves into a return status object that contains the following fields:
+
+-   index: `string`
+-   hasRegistered: `boolean` - whether or not registration was successful
+-   message: `string` - any success/failure message received from Webreg during the attempt
+-   screenshot: `string` - the file path the screenshot taken during attempt (might be broken)
+
+> ⚠️ The screenshot functionality is possibly broken and pending deprecation.
+
+```js
+const config = {
+    username: 'name',
+    password: 'pass',
+    index: '12345',
+    term: '0',
+    year: 2021,
+};
+
+// promises
+cral.registerForIndex(config)
+    .then(result => console.log(result))
+    .catch(err => console.error(err));
+
+// async await
+(async () => {
+    try {
+        const result = await cral.registerForIndex(config);
+    } catch (err) {
+        console.error(err);
+    }
+})();
+```
+
+### `getSectionInfo({ index, year, term, campus, level })`
+
+---
+
+`getSectionInfo` is an async function that returns the course and section information given an index. Returns a promise that resolves into an object containing course and section information.
+
+**Arguments:**
+
+-   index: `string` - five digit string representing a section number, ex: '12345'
+-   year: `int`
+-   term: `string` - one digit string representing month (indexed by 0) each term starts on: '0' for winter, '1' for spring, '7' for summer, '9' for fall
+-   campus: `string` - two character string where: "NB" is New Brunswick, "NK" is Newark, and "CM" is Camden
+-   level: `string` - one character string where: "U" is undergraduate and "G" is graudate.
+
+**Returns:** A promise that resolves into an object that contains the course and section information.
+
+```js
+const config = {
+    index: '12345',
+    year: 2021,
+    term: '0',
+    campus: 'NB',
+    level: 'U',
+};
+
+// promises
+cral.getSectionInfo(config)
+    .then(info => console.log(info))
+    .catch(err => console.error(err));
+
+// async await
+(async () => {
+    try {
+        const { section, course } = await cral.getSectionInfo(config);
+        console.log(section);
+        console.log(course);
+    } catch (err) {
+        console.error(err);
+    }
+})();
+```
+
+### `sectionOpen({ index, year, term, campus, level })`
+
+---
+
+`sectionOpen` is an async function returns whether not a section is open.
+
+**Arguments:**
+
+-   index: `string` - five digit string representing a section number, ex: '12345'
+-   year: `int`
+-   term: `string` - one digit string representing month (indexed by 0) each term starts on: '0' for winter, '1' for spring, '7' for summer, '9' for fall
+-   campus: `string` - two character string where: "NB" is New Brunswick, "NK" is Newark, and "CM" is Camden
+-   level: `string` - one character string where: "U" is undergraduate and "G" is graudate.
+
+**Returns:** `Promise<boolean>`
+
+```js
+const config = {
+    index: '12345',
+    year: 2021,
+    term: '0',
+    campus: 'NB',
+    level: 'U',
+};
+
+// promises
+cral.sectionOpen(config)
+    .then(isOpen => console.log(isOpen))
+    .catch(err => console.error(err));
+
+// async await
+(async () => {
+    try {
+        const isOpen = await cral.sectionOpen(config);
+    } catch (err) {
+        console.error(err);
+    }
+})();
+```
+
+More detailed documentation coming soon!
+
 ## What's Next
 
--   Registration for multiple indexes
--   Verify log-in information
--   Re-do configuration system
+-   Concurrent registration for multiple indexes
 -   Ability to drop certain conflicting classes when registering
 -   More comprehensive tests
 
@@ -138,7 +334,7 @@ If you're running this on a cloud environment such as Heroku, CodeAnywhere, or C
 
 ## Contributing
 
-This is an open source project so feel free to fork and/or contribute at anytime. This project uses the fork and pull request workflow.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Versioning
 
@@ -152,8 +348,8 @@ See also the list of [contributors](https://github.com/fireteam99/cral-cli/graph
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 
--   Shout-out to [Terminalize](https://github.com/faressoft/terminalizer) for the dope command line screenshots
+-   Shout-out to [Terminalize](https://github.com/faressoft/terminalizer) for the sweet command line screenshots.

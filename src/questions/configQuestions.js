@@ -87,7 +87,7 @@ module.exports = [
         validate: v =>
             ['NB', 'NK', 'CM'].includes(v)
                 ? true
-                : 'Campus (campus) must be "NB" for New Brunswick, "NK" for Newark, or "CM" for camden.',
+                : 'Campus (campus) must be "NB" for New Brunswick, "NK" for Newark, or "CM" for Camden.',
     },
     {
         type: 'list',
