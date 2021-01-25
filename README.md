@@ -1,8 +1,20 @@
 # cral-cli
 
-> ⚠️ Rutgers changed the CAS login page January 10th 2021. Please upgrade to version 2 or higher for everything to function properly.
+> ### ⚠️ Warning
+>
+> Rutgers changed the CAS login page January 10, 2021. Please upgrade to version 2 or higher for everything to function properly.
 
-A command line interface that makes registering for courses at Rutgers University easy. Makes use of [Rutgers API](http://api.rutgers.edu/) and [Puppeteer](https://github.com/GoogleChrome/puppeteer) to poll for openings and register for classes respectively.
+An open source command line interface that makes registering for courses at Rutgers University easy. Makes use of [Rutgers API](http://api.rutgers.edu/) and [Puppeteer](https://github.com/GoogleChrome/puppeteer) to poll for openings and register for classes respectively.
+
+> How is this different than [Course Tracker](https://apps.apple.com/us/app/id1143859898), [Schedru](https://www.schedru.me/), [trackRU](https://apps.apple.com/us/app/trackru-course-tracker/id1515376810), Course Sniper, etc...?
+
+The services mentioned above watch the status of selected sections and notify you when an opening is detected through push notifications, text, or email. CRAL takes it a step further by using browser automation to automatically register you for the section at superhuman speeds (add the `-d` flag when registering to see it in action).
+
+> Any caveats?
+
+Yeah theres a couple. For one, if you run this locally on your computer, you have to make sure it stays connected to the internet and doesn't go to sleep. One solution is to host it yourself on any linux instance - tip: the [screen](https://linuxize.com/post/how-to-use-linux-screen/) command can be very useful if your using ssh.
+
+You also need to be have some technical experience with using a terminal and setting up Node.js which the average person probably doesnt have. In the future it would be nice to abstract the CLI into a more user friendly application with a UI.
 
 ![demo-r1.gif](public/gifs/demo-r1.gif)
 
@@ -28,13 +40,13 @@ $ npm i cral-cli -g
 
 Clone the repository to keep up with the latest changes.
 
-```
+```bash
 $ git clone https://github.com/fireteam99/cral-cli.git
 ```
 
 Change directory to the cloned repository and create a symlink so you can run the cli anywhere
 
-```
+```bash
 $ cd cral-cli
 $ npm link
 ```
@@ -43,7 +55,7 @@ $ npm link
 
 This project uses Jest for tests.
 
-```
+```bash
 $ npm test
 ```
 
@@ -167,7 +179,7 @@ cral.getCASCookies('user', 'pass')
     .then(cookies => console.log(cookies))
     .catch(err => console.error(err));
 
-// async await
+// async-await
 (async () => {
     try {
         const cookies = await cral.getCASCookies('user', 'pass', {
@@ -205,7 +217,9 @@ cral.getCASCookies('user', 'pass')
 -   message: `string` - any success/failure message received from Webreg during the attempt
 -   screenshot: `string` - the file path the screenshot taken during attempt (might be broken)
 
-> ⚠️ The screenshot functionality is possibly broken and pending deprecation.
+> ### ⚠️ Warning
+>
+> The screenshot functionality is possibly broken and pending deprecation.
 
 ```js
 const config = {
@@ -221,7 +235,7 @@ cral.registerForIndex(config)
     .then(result => console.log(result))
     .catch(err => console.error(err));
 
-// async await
+// async-await
 (async () => {
     try {
         const result = await cral.registerForIndex(config);
@@ -261,7 +275,7 @@ cral.getSectionInfo(config)
     .then(info => console.log(info))
     .catch(err => console.error(err));
 
-// async await
+// async-await
 (async () => {
     try {
         const { section, course } = await cral.getSectionInfo(config);
@@ -303,7 +317,7 @@ cral.sectionOpen(config)
     .then(isOpen => console.log(isOpen))
     .catch(err => console.error(err));
 
-// async await
+// async-await
 (async () => {
     try {
         const isOpen = await cral.sectionOpen(config);
@@ -334,11 +348,15 @@ If you're running this on a cloud environment such as Heroku, CodeAnywhere, or C
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Don't forget to update any tests and/or documentation when neccessary.
 
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/fireteam99/cral-cli/tags).
+
+## Changelog
+
+All notable changes to this project will be documented in [CHANGELOG.md](CHANGELOG.md).
 
 ## Authors
 
@@ -353,3 +371,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 -   Shout-out to [Terminalize](https://github.com/faressoft/terminalizer) for the sweet command line screenshots.
+-   CS439 for filling up so quickly it made me create this tool
