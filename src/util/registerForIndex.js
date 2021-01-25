@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const makeDir = require('make-dir');
 const path = require('path');
+const getCASCookies = require('./getCASCookies');
 
 const createReturnStatus = (index, hasRegistered, message, screenshot) => {
     return { index, hasRegistered, message, screenshot };
@@ -15,14 +16,13 @@ const registerForIndex = async ({
     index,
     term,
     year,
-    baseTimeout,
-    puppeteerOptions,
-    randomization,
-    retryLimit,
+    baseTimeout = 1,
+    randomization = 0,
+    retryLimit = 3,
+    puppeteerOptions = {},
 }) => {
     // console.log(index);
     let browser = null;
-    let loginPage = null;
     let webregPage = null;
     let message = '';
     let screenshot = '';
@@ -50,33 +50,16 @@ const registerForIndex = async ({
         if (!retryLimit) {
             retryLimit = 0;
         }
-        let hrstart = process.hrtime();
+        // let hrstart = process.hrtime();
 
         browser = await puppeteer.launch(puppeteerOptions);
-        loginPage = await browser.newPage();
 
-        // logs into rutgers CAS
-        await loginPage.goto('https://cas.rutgers.edu/login');
-        await loginPage.type('#username', username);
-        await loginPage.type('#password', password);
-        await Promise.all([
-            loginPage.click('.btn-submit'),
-            loginPage.waitForNavigation(),
-        ]);
-        // check for login failure
-        const loginError = await loginPage.$('.errors');
-        if (loginError) {
-            const loginErrorMessage = await loginPage.evaluate(
-                loginError => loginError.textContent,
-                loginError
-            );
-            throw new Error(
-                'Login failed - please check your credentials in config. More info: ' +
-                    loginErrorMessage
-            );
-        }
         // grab the cookies for webreg
-        const cookies = await loginPage.cookies();
+        const cookies = await getCASCookies(
+            username,
+            password,
+            puppeteerOptions
+        );
 
         webregPage = await browser.newPage();
         await webregPage.setCookie(...cookies);
@@ -109,14 +92,14 @@ const registerForIndex = async ({
         );
         // console.log(semesterValues);
 
-        // selects the choosen semester and clicks submit
+        // selects the choosen semester and clicks submit should match format of "{term}{year}" ex: "02021"
         const [chosenSemester] = semesterValues.filter(
             sv => sv.value === `${term}${year}`
         );
         // checks if we were passed an invalid semester/year combination
         if (chosenSemester == null) {
             // if so return an error
-            throw new Error(
+            throw Error(
                 'invalid term/year combination. Please run "cral c" to check your config settings...'
             );
         }
@@ -209,6 +192,7 @@ const registerForIndex = async ({
                     const successScreenshotFolderPath = path.join(
                         __dirname,
                         '..',
+                        '..',
                         'screenshots'
                     );
                     // makes sure that the folder exists
@@ -250,6 +234,7 @@ const registerForIndex = async ({
                         const errorScreenshotFolderPath = path.join(
                             __dirname,
                             '..',
+                            '..',
                             'screenshots'
                         );
                         await makeDir(errorScreenshotFolderPath);
@@ -277,22 +262,15 @@ const registerForIndex = async ({
         // let hrend = process.hrtime(hrstart);
         // exits program
         // console.log(`Made ${attempts} attempt(s) in ${hrend[0]} seconds.`);
-        await webregPage.close();
-        await loginPage.close();
-        await browser.close();
 
         return createReturnStatus(index, wasAdded, message, screenshot);
-    } catch (err) {
+    } finally {
         if (webregPage) {
             await webregPage.close();
-        }
-        if (loginPage) {
-            await loginPage.close();
         }
         if (browser) {
             await browser.close();
         }
-        throw err;
     }
 };
 

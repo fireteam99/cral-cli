@@ -1,7 +1,7 @@
-const storage = require('node-persist');
 const { prompt } = require('inquirer');
 const chalk = require('chalk');
-const path = require('path');
+
+const writeConfig = require('../util/writeConfig');
 
 module.exports = async () => {
     try {
@@ -17,12 +17,11 @@ module.exports = async () => {
         if (!answer) {
             console.log(chalk.red('Exiting...'));
         } else {
-            // read in config from node persist
-            await storage.init({ dir: path.join(__dirname, '..', 'storage') });
-            await storage.clear();
+            // set the config file to null
+            await writeConfig(null);
             console.log(chalk.green('Successfully reset configurations'));
         }
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };

@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 
 const program = require('commander');
+const chalk = require('chalk');
 
 const configure = require('./commands/configure');
 const register = require('./commands/register');
 const display = require('./commands/display');
 const reset = require('./commands/reset');
+const fix = require('./commands/fix');
 
 program.version('1.0.0')
-    .description(`Command line interface to automated course registration for
+    .description(`Command line interface to automate course registration for
         Rutgers University.`);
 
 // error on unknown commands
-program.on('command:*', function() {
+program.on('command:*', function () {
     console.error(
         'Invalid command: %s\nSee --help for a list of available commands.',
         program.args.join(' ')
@@ -20,14 +22,27 @@ program.on('command:*', function() {
     process.exit(1);
 });
 
+// deal with any fatal unexpected errors
+const handleError = (err, cmdObj) => {
+    console.error(
+        chalk.red(cmdObj && cmdObj.verbose ? err.stack : err.message)
+    );
+    process.exit(1);
+};
+
 program
     .command('display')
     .alias('d')
     .description(`Displays user configuration options.`)
     .option('-p, --password', 'Display password')
-    .action(async function(cmdObj) {
-        await display(cmdObj);
-        process.exit(0);
+    .option('-v', '--verbose', 'More detailed error messages')
+    .action(async function (cmdObj) {
+        try {
+            await display(cmdObj);
+            process.exit(0);
+        } catch (err) {
+            handleError(err, cmdObj);
+        }
     });
 
 program
@@ -43,17 +58,41 @@ program
     .option('-i, --timeout', 'Configure timeout')
     .option('-r, --randomization', 'Configure randomization')
     .option('-o, --cloud', 'Configure cloud')
-    .option('-v, --verifyIndex', 'Configure index verification')
+    .option('-iv --verifyIndex', 'Configure index verification')
+    .option('-v', '--verbose', 'More detailed error messages')
     .description('Allows user to configure their registration options.')
-    .action(async function(cmdObj) {
-        await configure(cmdObj);
-        process.exit(0);
+    .action(async function (cmdObj) {
+        try {
+            await configure(cmdObj);
+            process.exit(0);
+        } catch (err) {
+            handleError(err, cmdObj);
+        }
+    });
+
+program
+    .command('fix')
+    .alias('f')
+    .option('-v', '--verbose', 'More detailed error messages')
+    .description(
+        'Prompts the user to set any missing/invalid configuration fields.'
+    )
+    .action(async function (cmdObj) {
+        try {
+            await fix(cmdObj);
+            process.exit(0);
+        } catch (err) {
+            handleError(err, cmdObj);
+        }
     });
 
 program
     .command('register [index]')
     .alias('r')
-    .option('-v, --verbose', 'Log more information to console')
+    .option(
+        '-v, --verbose',
+        'Log more information to console and more detailed error messages'
+    )
     .option('-d, --debug', 'Runs puppeteer in non-headless mode')
     .option(
         '-t <time>',
@@ -63,16 +102,21 @@ program
     .option('-u <username>', 'Overrides the configured username')
     .option('-p <password>', 'Overrides the configured password')
     .description('Allows user to register for a section of a course.')
-    .action(async function(index, cmdObj) {
-        await register({ index, ...cmdObj });
-        process.exit(0);
+    .action(async function (index, cmdObj) {
+        try {
+            await register({ index, ...cmdObj });
+            process.exit(0);
+        } catch (err) {
+            handleError(err, cmdObj);
+        }
     });
 
 program
     .command('reset')
     .alias('rs')
+    .option('-v', '--verbose', 'More detailed error messages')
     .description(`Resets the user's configuration file.`)
-    .action(async function() {
+    .action(async function () {
         await reset();
         process.exit(0);
     });

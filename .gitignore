@@ -13,6 +13,7 @@ Thumbs.db
 storage/
 screenshots/
 log.txt
+config.json
 
 # Node Modules #
 ######################
