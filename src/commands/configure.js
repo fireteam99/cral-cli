@@ -1,5 +1,4 @@
 const { prompt } = require('inquirer');
-const chalk = require('chalk');
 
 const configQuestions = require('../questions/configQuestions');
 const readConfig = require('../util/readConfig');
