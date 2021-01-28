@@ -1,6 +1,10 @@
 # cral-cli
 
-> ### ⚠️ Warning
+> ### ⚠️ Disclaimer
+>
+> The use of automated registration software is disallowed by Webreg. While it is extremely unlikely you will be penalized under normal circumstances (due to the way the cli works) understand that you run the risk having your registration privlidges suspended. This project created as a proof of concept and should be used in a responsible manner.
+
+> ### ℹ️ Info
 >
 > Rutgers changed the CAS login page January 10, 2021. Please upgrade to version 2 or higher for everything to function properly.
 
