@@ -4,7 +4,13 @@ const configQuestions = require('../questions/configQuestions');
 const readConfig = require('../util/readConfig');
 const writeConfig = require('../util/writeConfig');
 
-module.exports = async cmdObj => {
+/**
+ * Prompts the user to enter configuration questions, then saves them to the config file.
+ *
+ * @param {Object} cmdObj The object passed by the commander action handler
+ *   containing the user input information.
+ */
+async function configure(cmdObj) {
     // check flags to see which questions to prompt
     const selectedQuestions = configQuestions.filter(q => cmdObj[q.name]);
     try {
@@ -20,4 +26,6 @@ module.exports = async cmdObj => {
     } catch (err) {
         throw err;
     }
-};
+}
+
+module.exports = configure;

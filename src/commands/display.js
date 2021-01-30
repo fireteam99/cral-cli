@@ -3,7 +3,13 @@ const chalk = require('chalk');
 const readConfig = require('../util/readConfig');
 const configQuestions = require('../questions/configQuestions');
 
-module.exports = async cmdObj => {
+/**
+ * Outputs the user's configuration file in a user friendly format.
+ *
+ * @param {Object} cmdObj The object passed by the commander action handler
+ *   containing the user input information.
+ */
+async function display(cmdObj) {
     try {
         console.log(chalk.cyan('Configuration Settings:'));
         const config = await readConfig();
@@ -38,4 +44,6 @@ module.exports = async cmdObj => {
     } catch (err) {
         throw err;
     }
-};
+}
+
+module.exports = display;

@@ -6,7 +6,13 @@ const readConfig = require('../util/readConfig');
 const writeConfig = require('../util/writeConfig');
 const getInvalidConfigQuestions = require('../util/getInvalidConfigQuestions');
 
-module.exports = async cmdObj => {
+/**
+ * Prompts the user to enter configuration options for any missing/invalid config fields.
+ *
+ * @param {Object} cmdObj The object passed by the commander action handler
+ *   containing the user input information.
+ */
+async function fix(cmdObj) {
     // check to see if there are any invalid configs to fix
     const config = await readConfig();
     const questions =
@@ -22,4 +28,6 @@ module.exports = async cmdObj => {
     } catch (err) {
         throw err;
     }
-};
+}
+
+module.exports = fix;
