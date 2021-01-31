@@ -1,8 +1,13 @@
-const registerForIndex = require('./registerForIndex');
-const options = require('./config/options');
 const rusocapi = require('./api');
+const registerForCourse = require('../util/registerForIndex');
 
-const runRegistration = async ({ indexes, runOptions }) => {
+/**
+ * Unused brute force function that attempts to register for a set of indexes
+ * every n seconds.
+ *
+ * @deprecated Since v1.0.0
+ */
+async function registerMany({ indexes, runOptions }) {
     if (!indexes) {
         console.error('Error, indexes not passed.');
     }
@@ -62,4 +67,4 @@ const runRegistration = async ({ indexes, runOptions }) => {
     } catch (err) {
         console.log(err);
     }
-};
+}

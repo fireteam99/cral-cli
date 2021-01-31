@@ -1,6 +1,16 @@
 const puppeteer = require('puppeteer');
 
-const getCASCookies = async (username, password, puppeteerOptions = {}) => {
+/**
+ * A Puppeteer script that logs in to the old version of Rutgers's CAS login
+ * page. Deprecated since version 2 because the CAS login page was updated.
+ *
+ * @deprecated Since v2.0.0
+ * @param {String} username Rutgers netid username
+ * @param {String} password Rutgers netid password
+ * @param {Object} puppeteerOptions Launch options for Puppeteer
+ * @returns {Object} The cookies of the CAS login page
+ */
+async function getCASCookies(username, password, puppeteerOptions = {}) {
     if (username == null) {
         throw Error('No username provided for authentication.');
     }
@@ -46,10 +56,6 @@ const getCASCookies = async (username, password, puppeteerOptions = {}) => {
             await browser.close();
         }
     }
-};
+}
 
 module.exports = getCASCookies;
-
-getCASCookies('eee', 'feces!', { headless: false })
-    .then(cookies => console.log(cookies))
-    .catch(err => console.log(err));
