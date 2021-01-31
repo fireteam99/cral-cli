@@ -1,4 +1,8 @@
-module.exports = [
+/**
+ * @constant
+ * A list of inquirer.js questions to be prompted during registration.
+ */
+const registerQuestions = [
     {
         type: 'input',
         name: 'index',
@@ -44,3 +48,5 @@ module.exports = [
         },
     },
 ];
+
+module.exports = registerQuestions;
