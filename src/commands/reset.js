@@ -26,3 +26,5 @@ async function reset() {
         throw err;
     }
 }
+
+module.exports = reset;
