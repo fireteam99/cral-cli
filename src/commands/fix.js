@@ -9,7 +9,7 @@ const getInvalidConfigQuestions = require('../util/getInvalidConfigQuestions');
 /**
  * Prompts the user to enter configuration options for any missing/invalid config fields.
  *
- * @param {Object} cmdObj The object passed by the commander action handler
+ * @param {Object} cmdObj - The object passed by the commander action handler
  *   containing the user input information.
  */
 async function fix(cmdObj) {

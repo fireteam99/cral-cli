@@ -6,7 +6,7 @@ const configQuestions = require('../questions/configQuestions');
 /**
  * Outputs the user's configuration file in a user friendly format.
  *
- * @param {Object} cmdObj The object passed by the commander action handler
+ * @param {Object} cmdObj - The object passed by the commander action handler
  *   containing the user input information.
  */
 async function display(cmdObj) {

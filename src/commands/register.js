@@ -29,7 +29,7 @@ const sleep = ms => {
  * Runs the register sequence which watches the specified section for openings,
  * and attempts to register when an opening is found.
  *
- * @param {Object} cmdObj The object passed by the commander action handler
+ * @param {Object} cmdObj - The object passed by the commander action handler
  *   containing the user input information.
  */
 async function register(index, cmdObj) {
