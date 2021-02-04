@@ -104,7 +104,7 @@ program
     .description('Allows user to register for a section of a course.')
     .action(async function (index, cmdObj) {
         try {
-            await register({ index, ...cmdObj });
+            await register(index, cmdObj);
             process.exit(0);
         } catch (err) {
             handleError(err, cmdObj);
@@ -116,9 +116,13 @@ program
     .alias('rs')
     .option('-v', '--verbose', 'More detailed error messages')
     .description(`Resets the user's configuration file.`)
-    .action(async function () {
-        await reset();
-        process.exit(0);
+    .action(async function (cmdObj) {
+        try {
+            await reset();
+            process.exit(0);
+        } catch (err) {
+            handleError(err, cmdObj);
+        }
     });
 
 // checks for empy commands

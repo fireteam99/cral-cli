@@ -1,4 +1,10 @@
-module.exports = letter => {
+/**
+ * Maps day abbreviations used by Rutgers to the full day name.
+ *
+ * @param {String} letter - Rutgers day abbreviation.
+ * @returns {String} Full day name
+ */
+function dayFromLetter(letter) {
     switch (letter) {
         case 'M':
             return 'Monday';
@@ -17,4 +23,6 @@ module.exports = letter => {
         default:
             return 'N/A';
     }
-};
+}
+
+module.exports = dayFromLetter;

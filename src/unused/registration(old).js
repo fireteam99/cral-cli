@@ -8,7 +8,12 @@ const {
     randomization,
 } = require('./config/options.js');
 
-const registerForCourses = async () => {
+/**
+ * The original proof of concept registration script.
+ *
+ * @deprecated Since v1.0.0
+ */
+async function registerForCourses() {
     try {
         let hrstart = process.hrtime();
         const browser = await puppeteer.launch(puppeteerOptions);
@@ -145,7 +150,7 @@ const registerForCourses = async () => {
     } catch (err) {
         console.log(err);
     }
-};
+}
 
 try {
     registerForCourses();

@@ -3,7 +3,8 @@ const chalk = require('chalk');
 
 const writeConfig = require('../util/writeConfig');
 
-module.exports = async () => {
+/** Clears the configuration file of all settings. */
+async function reset() {
     try {
         // confirm the user wants to reset their config
         const answer = await prompt([
@@ -15,6 +16,7 @@ module.exports = async () => {
             },
         ]);
         if (!answer) {
+            // exit without making changes
             console.log(chalk.red('Exiting...'));
         } else {
             // set the config file to null
@@ -24,4 +26,6 @@ module.exports = async () => {
     } catch (err) {
         throw err;
     }
-};
+}
+
+module.exports = reset;

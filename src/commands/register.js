@@ -25,7 +25,14 @@ const sleep = ms => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-const register = async cmdObj => {
+/**
+ * Runs the register sequence which watches the specified section for openings,
+ * and attempts to register when an opening is found.
+ *
+ * @param {Object} cmdObj - The object passed by the commander action handler
+ *   containing the user input information.
+ */
+async function register(index, cmdObj) {
     // define spinners
     let checkSpinner = null;
     let regSpinner = null;
@@ -85,14 +92,10 @@ const register = async cmdObj => {
         }
 
         const { cloud } = config;
-        let index = null;
-        let duration = null;
+        let duration = Infinity;
         // check to see if index was manually passed in through flags
-        if (cmdObj.index != null) {
-            index = cmdObj.index;
-            if (cmdObj.T == null) {
-                duration = Infinity;
-            } else {
+        if (index != null) {
+            if (cmdObj.T != null) {
                 duration = cmdObj.T;
             }
         } else {
@@ -416,6 +419,6 @@ const register = async cmdObj => {
         // throw the error
         throw err;
     }
-};
+}
 
 module.exports = register;

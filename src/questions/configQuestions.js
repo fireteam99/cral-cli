@@ -1,4 +1,8 @@
-module.exports = [
+/**
+ * @constant
+ * A list of inquirer.js questions to be prompted during configuration.
+ */
+const configQuestions = [
     {
         type: 'input',
         name: 'username',
@@ -161,3 +165,5 @@ module.exports = [
                 : 'Verify index (verifyIndex) must be a boolean.',
     },
 ];
+
+module.exports = configQuestions;
