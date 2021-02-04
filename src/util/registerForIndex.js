@@ -10,6 +10,25 @@ const createReturnStatus = (index, hasRegistered, message, screenshot) => {
 // Note: fatal errors are thrown, non fatal errors are returned in the return status message field
 
 // returns true on successful add and false on failed add
+
+/**
+ * Attempts to register for an index on Webreg using Puppeteer.
+ *
+ * @function
+ * @param {{
+ *     username;
+ *     password;
+ *     index;
+ *     term;
+ *     year;
+ *     [baseTimeout = 1];
+ *     [randomization = 0];
+ *     [retryLimit = 3];
+ *     [puppeteerOptions = {}];
+ * }} options
+ * @returns {{ index; hasRegistered; message; screenshot }} An object that
+ *   contains information of the status of the registsartion
+ */
 const registerForIndex = async ({
     username,
     password,

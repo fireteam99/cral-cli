@@ -1,4 +1,10 @@
-const milToStd = mTime => {
+/**
+ * Converts a Rutgers SOC formatted military time to formatted standard time.
+ *
+ * @param {String} mTime - Rutgers SOC formatted military time
+ * @returns {String} Formatted standard time
+ */
+function milToStd(mTime) {
     if (mTime == null) {
         return 'N/A';
     }
@@ -20,7 +26,7 @@ const milToStd = mTime => {
             ? `${digits[0]}:${digits[1]}${digits[2]} PM`
             : `${digits[0]}${digits[1]}:${digits[2]}${digits[3]} PM`;
     }
-};
+}
 
 module.exports = milToStd;
 

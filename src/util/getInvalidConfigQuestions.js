@@ -1,6 +1,11 @@
 const configQuestions = require('../questions/configQuestions');
 
-// returns an array of questions for fields that failed validation
+/**
+ * Finds a list of questions to prompt to fix invalid config fields
+ *
+ * @param {Object} config - The user's configuration object
+ * @returns {Array} Questions for config fields that failed validation
+ */
 function getInvalidConfigQuestions(config) {
     // find the config properties that failed validation
     const failed = configQuestions.filter(({ name, validate }) => {

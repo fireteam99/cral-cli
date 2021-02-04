@@ -16,6 +16,7 @@ async function reset() {
             },
         ]);
         if (!answer) {
+            // exit without making changes
             console.log(chalk.red('Exiting...'));
         } else {
             // set the config file to null

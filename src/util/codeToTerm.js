@@ -1,4 +1,10 @@
-module.exports = code => {
+/**
+ * Maps numerical term codes, to actual term names.
+ *
+ * @param {String} code Numerical term code
+ * @returns {String} Human readable term name
+ */
+function codeToTerm(code) {
     switch (code) {
         case '0':
             return 'Winter';
@@ -11,4 +17,6 @@ module.exports = code => {
         default:
             return 'Error';
     }
-};
+}
+
+module.exports = codeToTerm;

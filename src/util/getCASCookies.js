@@ -1,6 +1,17 @@
 const puppeteer = require('puppeteer');
 
-const getCASCookies = async (username, password, puppeteerOptions = {}) => {
+/**
+ * An async function used to grab the cookies used for authenticating a user
+ * for Webreg through the Central Authorization System.
+ *
+ * @param {String} username - A netid username
+ * @param {String} password - A netid password
+ * @param {Object} [puppeteerOptions] Default is `{}` - Launch options for Puppeteer
+ * @throws Will throw an error if username or password is missing
+ * @throws Will throw an error if login fails
+ * @returns {Object} Any cookies present after logging into the CAS page
+ */
+async function getCASCookies(username, password, puppeteerOptions = {}) {
     if (username == null) {
         throw Error('No username provided for authentication.');
     }
@@ -54,6 +65,6 @@ const getCASCookies = async (username, password, puppeteerOptions = {}) => {
             await browser.close();
         }
     }
-};
+}
 
 module.exports = getCASCookies;

@@ -1,7 +1,20 @@
 const soc = require('../apis/soc');
 
-// checks to see if an index is valid and returns some data about that index
-const getSectionInfo = async ({ index, year, term, campus, level }) => {
+/**
+ * Attempts to fetch the course and section information from the Rutgers SOC
+ * API given a section index.
+ *
+ * @param {{
+ *     index: String;
+ *     year: String | Number;
+ *     term: String;
+ *     campus: String;
+ *     level: String;
+ * }} { Index,
+ *   year, term, campus, level }
+ * @returns {Object} An object that contains a `course` and `section` property
+ */
+async function getSectionInfo({ index, year, term, campus, level }) {
     try {
         // get a list of all the availible courses
         const response = await soc.get('/courses.gz', {
@@ -15,7 +28,10 @@ const getSectionInfo = async ({ index, year, term, campus, level }) => {
         const courses = response.data;
         let selectedCourse = null;
         let selectedSection = null;
+
+        // search for matching course
         for (course of courses) {
+            // search for matching section
             for (section of course.sections) {
                 if (selectedCourse || selectedSection) {
                     break;
@@ -37,7 +53,7 @@ const getSectionInfo = async ({ index, year, term, campus, level }) => {
     } catch (err) {
         throw err;
     }
-};
+}
 
 module.exports = getSectionInfo;
 

@@ -3,7 +3,12 @@ const path = require('path');
 
 file = path.join(__dirname, '..', '..', 'config.json');
 
-module.exports = async () => {
+/**
+ * Reads the configuration file from disk. Returns null if the file is not found.
+ *
+ * @returns {Object} The configuration file object
+ */
+async function readConfig() {
     try {
         const config = await jsonfile.readFile(file);
         return config;
@@ -15,4 +20,6 @@ module.exports = async () => {
             throw err;
         }
     }
-};
+}
+
+module.exports = readConfig;
