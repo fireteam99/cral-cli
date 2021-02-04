@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   JSDocs for all functions
+-   More inline comments
+
 ## [2.0.0] - 2021-01-24
 
 ### Added
@@ -44,4 +49,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Notifications when a registration fails or succeeds
 -   Basic tests for util functions
 
+[2.0.0]: https://github.com/fireteam99/cral-cli/releases/tag/v2.0.0
 [1.0.0]: https://github.com/fireteam99/cral-cli/releases/tag/v1.0
