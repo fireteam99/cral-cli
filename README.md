@@ -16,9 +16,9 @@ The services mentioned above watch the status of selected sections and notify yo
 
 > Any caveats?
 
-Yeah theres a couple. For one, if you run this locally on your computer, you have to make sure it stays connected to the internet and doesn't go to sleep. One solution is to host it yourself on any linux instance - tip: the [screen](https://linuxize.com/post/how-to-use-linux-screen/) command can be very useful if your using ssh.
+Yes, a couple. For one, if you run this locally on your computer, you have to make sure it stays connected to the internet and doesn't go to sleep. One solution is to host it yourself on any linux instance - tip: the [screen](https://linuxize.com/post/how-to-use-linux-screen/) command can be very useful if your using ssh.
 
-You also need to be have some technical experience with using a terminal and setting up Node.js which the average person probably doesnt have. In the future it would be nice to abstract the CLI into a more user friendly application with a UI.
+You also need to be comfortable working with a terminal and have Node.js set up. It would be nice to abstract the CLI into a more user friendly UI based application.
 
 ![demo-r1.gif](public/gifs/demo-r1.gif)
 
